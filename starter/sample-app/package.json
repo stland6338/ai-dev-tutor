@@ -1,0 +1,11 @@
+{
+  "name": "tasklog",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ai-dev-tutor の演習用。タスクを JSON に記録する小さな CLI",
+  "type": "module",
+  "bin": { "tasklog": "src/cli.js" },
+  "scripts": {
+    "test": "node --test"
+  }
+}
