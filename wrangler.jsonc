@@ -1,0 +1,11 @@
+// Cloudflare Workers（Static Assets のみ）
+// - ai-dev-tutor のビューアと章を配信する
+// - 配信するのは npm run build で作る ./dist だけ。プロジェクト直下は配信しない
+{
+  "name": "ai-dev-tutor",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist",
+    "html_handling": "drop-trailing-slash",
+  },
+}

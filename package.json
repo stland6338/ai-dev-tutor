@@ -4,13 +4,20 @@
   "private": true,
   "description": "Anthropic / xAI が推奨する AI エージェント開発を、vimtutor 形式で手を動かして学ぶ教材",
   "type": "module",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "start": "node scripts/start.mjs",
     "check": "node scripts/check.mjs",
     "done": "node scripts/check.mjs --done",
     "test": "node --test scripts/*.test.mjs",
     "self-test": "node scripts/self-test.mjs",
-    "serve": "python3 -m http.server 3250 --bind 127.0.0.1"
+    "serve": "python3 -m http.server 3250 --bind 127.0.0.1",
+    "build": "node scripts/build.mjs",
+    "deploy": "npm run build && wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.106.0"
   }
 }

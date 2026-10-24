@@ -27,8 +27,10 @@ const $ = (id) => document.getElementById(id);
 let LESSONS = [];
 let PROGRESS = null;
 
-// python の http.server が返す一覧から .md を拾う（docs/lesson-format.md: ファイル名 = <id>.md）
+// 公開版は build が書いた lessons/index.json、手元の npm run serve では python の http.server が返す一覧から .md を拾う
 async function listLessonFiles() {
+  const index = await fetch("lessons/index.json", { cache: "no-store" }).catch(() => null);
+  if (index?.ok) return index.json();
   const html = await fetch("lessons/", { cache: "no-store" }).then((r) => r.text());
   return [...new Set([...html.matchAll(/href="([^"/]+\.md)"/g)].map((m) => m[1]))].sort();
 }

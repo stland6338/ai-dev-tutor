@@ -4,3 +4,5 @@ progress-manual.json
 .DS_Store
 .env
 .env.*
+dist/
+.wrangler/

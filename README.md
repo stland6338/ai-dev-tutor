@@ -13,6 +13,8 @@ npm run done -- <課題ID>   # 手動の課題を完了にする
 
 最初の章は [lessons/00-intro.md](lessons/00-intro.md) です。
 
+読むだけなら公開版でも読めます: https://ai-dev-tutor.stland6338.workers.dev （進捗は手元の `npm run check` でしか出ません）
+
 ## 収録状況（2026-10-24）
 
 | トラック | 状態 |
