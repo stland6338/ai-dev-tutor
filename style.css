@@ -91,6 +91,11 @@ main:focus { outline: none; }
 .content img { display: block; max-width: 100%; height: auto; margin: 16px 0; padding: 8px; background: #fff; border: 1px solid var(--line); border-radius: 10px; }
 .content blockquote { margin: 16px 0; padding: 8px 14px; border-left: 3px solid var(--line); color: var(--muted); }
 
+/* 章に埋め込むスライド（frontmatter の deck） */
+.deck { margin: 16px 0 4px; }
+.deck iframe { display: block; width: 100%; aspect-ratio: 16 / 9; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); }
+.deck-open { margin: 6px 0 0; font-size: 13px; text-align: right; }
+
 /* 課題カード */
 .exercise { border: 1px solid var(--line); border-left: 4px solid var(--muted); background: var(--panel); border-radius: 10px; padding: 12px 16px; margin: 18px 0; box-shadow: var(--shadow); }
 .exercise.ok { border-left-color: var(--ok); }
@@ -146,6 +151,7 @@ aside { position: sticky; top: 72px; align-self: start; }
   .bar { width: 64px; }
   .overall .muted { display: none; }
   .content h1 { font-size: 23px; }
+  .deck iframe { aspect-ratio: auto; height: min(78vh, 640px); }
 }
 
 /* Xの関連投稿 */

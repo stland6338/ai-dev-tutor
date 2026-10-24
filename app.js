@@ -244,6 +244,17 @@ function versionWarning(meta) {
   return notes.map((n) => `<p class="warn">${esc(n.replace(/^[^:]+: /, ""))}</p>`).join("");
 }
 
+// frontmatter の deck（slides/ の1ファイル HTML）を章の上に iframe で出す。自サイトのスライドだけを許す
+function renderDeck(meta) {
+  const src = String(meta.deck ?? "");
+  if (!/^slides\/[a-z0-9-]+\.html$/.test(src)) return "";
+  return `
+    <section class="deck">
+      <iframe src="${esc(src)}" title="${esc(meta.title)}（スライド）" loading="lazy" allow="fullscreen"></iframe>
+      <p class="deck-open"><a href="${esc(src)}" target="_blank" rel="noopener">スライドを新しいタブで開く ↗</a></p>
+    </section>`;
+}
+
 function renderLesson(l) {
   const { meta } = l;
   const i = LESSONS.indexOf(l);
@@ -257,6 +268,7 @@ function renderLesson(l) {
         ${meta.estimated_minutes ? `<span class="ref">目安 ${esc(meta.estimated_minutes)} 分</span>` : ""}
       </div>
       ${versionWarning(meta)}
+      ${renderDeck(meta)}
       <div class="cols">
         <div class="content">
           <h1>${esc(meta.title)}</h1>

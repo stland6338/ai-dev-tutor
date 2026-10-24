@@ -25,6 +25,7 @@ announcements:                # 本文の横に出す「公式の告知」。本
     url: https://x.com/bcherny/status/2007179832300581177
     summary: 1行の要約
     verified: false           # 原文を直接確かめていなければ false（「未確認」の札が付く）
+deck: slides/01-overview.html # 任意。章の上にスライドを iframe で出す（slides/ の1ファイル HTML だけ）
 history:                      # 推奨の変遷。章末に年表として出す
   - version: 0.2.44
     date: 2025-03-15
@@ -35,6 +36,10 @@ history:                      # 推奨の変遷。章末に年表として出す
 ```
 
 announcements と sources の X の投稿 URL は、本文下の「Xの関連投稿」欄にも出る。本文には引用せず要約と URL だけを書く。閲覧者がボタンで開いたときに出る X 公式の埋め込みだけは例外（開くまで X には通信しない）。
+
+## スライド（deck）
+
+`deck` に `slides/<名前>.html` を書くと、ビューアが章の上に iframe で表示する。スライドは外部の読み込みなしの1ファイル HTML にし、`<script>` は `<script>`（属性なし）で書く。build がその中身のハッシュを `/slides/*` の CSP に入れる。このパスだけ `frame-ancestors 'self'` と `X-Frame-Options: SAMEORIGIN` にして、自サイトの章からの埋め込みを許している。章へのリンクは `../#/<章の id>` と `target="_top"` で書く。
 
 ## 確認の度合いの印
 

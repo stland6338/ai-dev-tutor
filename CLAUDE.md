@@ -6,7 +6,7 @@ Anthropic / xAI が推奨する AI エージェント開発を、vimtutor 形式
 - `npm test` — 判定ロジックと全章の frontmatter のテスト
 - `npm run self-test` — 新しい workspace で全課題が不合格、`solutions/` を重ねると全課題が合格になることを確かめる。**章や課題を変えたら必ず実行**
 - `npm run serve` — ビューア（http://localhost:3250）。プレビューは launch.json の `ai-dev-tutor`
-- `npm run deploy` — `dist/` を作って Cloudflare Workers（Static Assets）に配信。公開先は https://ai-dev-tutor.stland6338.workers.dev 。配信するのは `scripts/build.mjs` の FILES と lessons だけ（調査メモ・模範解答・進捗は出さない）。セキュリティヘッダーは build が `dist/_headers` に書く
+- `npm run deploy` — `dist/` を作って Cloudflare Workers（Static Assets）に配信。公開先は https://ai-dev-tutor.stland6338.workers.dev 。配信するのは `scripts/build.mjs` の FILES と lessons・slides だけ（調査メモ・模範解答・進捗は出さない）。セキュリティヘッダーは build が `dist/_headers` に書く
 
 ## 構成
 - `lessons/<id>.md` — 章。形式は [docs/lesson-format.md](docs/lesson-format.md)

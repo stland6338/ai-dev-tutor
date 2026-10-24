@@ -1,0 +1,564 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>全体像: 任せられる開発の構成 · ai-dev-tutor</title>
+<style>
+:root {
+  --bg: #fbfaf7; --panel: #ffffff; --ink: #1f2328; --muted: #667085; --line: #e6e2d9;
+  --accent: #b4532a; --accent-soft: #f7e9e1; --ok: #1f7a4d; --ok-soft: #e3f3ea; --ng: #9a6700; --ng-soft: #fdf3d8;
+  --blue: #2f5f98; --blue-soft: #e5edf7; --code-bg: #f3f1ec; --outer: #efece6;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #15171a; --panel: #1c1f23; --ink: #e6e6e3; --muted: #9aa1ab; --line: #2e3238;
+    --accent: #e88a5f; --accent-soft: #3a261c; --ok: #5cc48d; --ok-soft: #173326; --ng: #e0b54c; --ng-soft: #3a2f12;
+    --blue: #8db4e8; --blue-soft: #1c2a3b; --code-bg: #24282d; --outer: #0f1113; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #15171a; --panel: #1c1f23; --ink: #e6e6e3; --muted: #9aa1ab; --line: #2e3238;
+  --accent: #e88a5f; --accent-soft: #3a261c; --ok: #5cc48d; --ok-soft: #173326; --ng: #e0b54c; --ng-soft: #3a2f12;
+  --blue: #8db4e8; --blue-soft: #1c2a3b; --code-bg: #24282d; --outer: #0f1113; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body {
+  background: var(--outer); color: var(--ink); display: grid; place-items: center; overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", "Noto Sans CJK JP", "Yu Gothic UI", sans-serif;
+  -webkit-font-smoothing: antialiased; line-height: 1.55;
+}
+a { color: var(--accent); }
+code { white-space: nowrap; font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.9em; background: var(--code-bg); padding: 0.05em 0.35em; border-radius: 0.3em; }
+
+/* 16:9 の台。文字の大きさは台の幅に比例させる（幅 1280px で 16px） */
+.deck {
+  position: relative; width: min(100vw, 177.78vh); height: min(56.25vw, 100vh);
+  font-size: min(1.25vw, 2.2222vh); background: var(--bg); overflow: hidden;
+}
+.slide { position: absolute; inset: 0; padding: 2.6em 3.6em 4.4em; display: none; flex-direction: column; gap: 1.1em; }
+.slide.active { display: flex; }
+.kicker { font-size: 0.95em; font-weight: 700; letter-spacing: 0.08em; color: var(--accent); margin: 0; }
+h1, h2 { margin: 0; line-height: 1.3; letter-spacing: 0.01em; }
+h2 { font-size: 2.15em; }
+.lead { font-size: 1.2em; color: var(--muted); margin: 0; }
+p { margin: 0; }
+ul { margin: 0; padding-left: 1.2em; }
+li + li { margin-top: 0.35em; }
+.body { flex: 1; min-height: 0; display: grid; gap: 1.2em; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 0.8em; padding: 1em 1.2em; min-width: 0; }
+.card h3 { font-size: 1.45em; margin: 0 0 0.45em; line-height: 1.35; }
+.card p, .card li { font-size: 1.25em; }
+.tag { display: inline-block; font-size: 0.85em; font-weight: 700; padding: 0.1em 0.65em; border-radius: 999px; background: var(--accent-soft); color: var(--accent); }
+.muted { color: var(--muted); }
+.small { font-size: 0.95em; }
+
+/* 関連する章 */
+.chapters { position: absolute; left: 3.6em; bottom: 1.3em; right: 14em; display: flex; flex-wrap: wrap; gap: 0.45em 0.6em; align-items: center; font-size: 0.95em; }
+.chapters > span { color: var(--muted); }
+.chapters a { text-decoration: none; border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent); padding: 0.15em 0.7em; border-radius: 999px; background: var(--panel); white-space: nowrap; }
+.chapters a:hover, .chapters a:focus-visible { background: var(--accent-soft); }
+
+/* 操作 */
+.nav { position: absolute; right: 1.6em; bottom: 1.1em; display: flex; align-items: center; gap: 0.6em; font-size: 0.95em; z-index: 2; }
+.nav button {
+  font: inherit; width: 2.3em; height: 2.3em; border-radius: 50%; border: 1px solid var(--line); background: var(--panel);
+  color: var(--ink); cursor: pointer; line-height: 1;
+}
+.nav button:disabled { opacity: 0.35; cursor: default; }
+.nav button:focus-visible, .chapters a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.count { min-width: 3.6em; text-align: center; color: var(--muted); font-variant-numeric: tabular-nums; }
+.progress { position: absolute; left: 0; right: 0; top: 0; height: 0.3em; background: var(--line); }
+.progress > span { display: block; height: 100%; background: var(--accent); transition: width 0.2s; }
+
+/* 1 表紙 */
+.cover { justify-content: center; gap: 1.4em; padding-left: 5em; padding-right: 5em; }
+.cover h1 { font-size: 3.1em; line-height: 1.28; }
+.cover h1 em { font-style: normal; color: var(--accent); }
+.cover .lead { font-size: 1.35em; max-width: 46em; color: var(--ink); }
+.pills { display: flex; gap: 0.8em; flex-wrap: wrap; }
+.pills span { font-size: 1.15em; font-weight: 700; padding: 0.35em 1em; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); }
+.pills b { color: var(--accent); margin-right: 0.35em; }
+.fact { display: flex; gap: 1.6em; align-items: center; border-left: 0.3em solid var(--accent); padding: 0.4em 0 0.4em 1.1em; }
+.fact .num { font-size: 2.4em; font-weight: 800; color: var(--accent); line-height: 1.1; white-space: nowrap; }
+.fact p { font-size: 1.05em; }
+.asof { font-size: 0.95em; color: var(--muted); }
+
+/* 2 今とこれから */
+.versus { grid-template-columns: 1fr auto 1fr; align-items: stretch; }
+.versus .card h3 { font-size: 1.6em; }
+.versus .card { padding: 1.4em 1.6em; }
+.versus .before h3 { color: var(--muted); }
+.versus .after { border-color: color-mix(in srgb, var(--accent) 45%, transparent); background: color-mix(in srgb, var(--accent-soft) 55%, var(--panel)); }
+.versus .after h3 { color: var(--accent); }
+.versus li { font-size: 1.4em; }
+.versus li + li { margin-top: 0.7em; }
+.arrow { align-self: center; font-size: 2.6em; color: var(--accent); font-weight: 700; }
+.note { font-size: 1.15em; padding: 0.6em 1em; border-radius: 0.6em; background: var(--code-bg); }
+
+/* 3 全体の地図 */
+.map { grid-template-columns: repeat(3, 1fr); gap: 0.9em 1em; }
+.layer { display: flex; flex-direction: column; gap: 0.6em; }
+.layer > h3 { font-size: 1.25em; margin: 0; padding: 0.3em 0.8em; border-radius: 0.5em; }
+.layer.l1 > h3 { background: var(--blue-soft); color: var(--blue); }
+.layer.l2 > h3 { background: var(--accent-soft); color: var(--accent); }
+.layer.l3 > h3 { background: var(--ok-soft); color: var(--ok); }
+.ch { display: flex; flex-direction: column; justify-content: center; flex: 1; font-size: 1.2em; text-decoration: none; color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 0.6em; padding: 0.5em 0.8em; }
+.ch:hover, .ch:focus-visible { border-color: var(--accent); outline: none; }
+.ch b { color: var(--accent); margin-right: 0.4em; }
+.ch span { display: block; font-size: 0.98em; color: var(--muted); }
+
+/* 4 /goal */
+.goal { grid-template-columns: 1.1fr 1fr; }
+.cmd { font-family: ui-monospace, "SF Mono", Menlo, Consolas, "Noto Sans Mono CJK JP", monospace; background: var(--code-bg); border-radius: 0.6em; padding: 0.9em 1em; font-size: 1.25em; line-height: 1.7; }
+.cmd .p { color: var(--accent); font-weight: 700; }
+.cmd mark { background: none; color: inherit; border-bottom: 0.18em solid; padding-bottom: 0.05em; }
+.cmd mark.m1 { border-color: var(--blue); }
+.cmd mark.m2 { border-color: var(--ok); }
+.cmd mark.m3 { border-color: var(--ng); }
+.cmd mark.m4 { border-color: var(--accent); }
+.legend { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5em 1em; margin-top: 1em; font-size: 1.15em; }
+.legend span::before { content: ""; display: inline-block; width: 1.4em; height: 0.25em; margin-right: 0.5em; vertical-align: middle; }
+.legend .m1::before { background: var(--blue); } .legend .m2::before { background: var(--ok); }
+.legend .m3::before { background: var(--ng); } .legend .m4::before { background: var(--accent); }
+.steps { list-style: none; padding: 0; counter-reset: s; }
+.steps li { counter-increment: s; position: relative; padding-left: 2.1em; font-size: 1.25em; }
+.steps li + li { margin-top: 0.8em; }
+.steps li::before { content: counter(s); position: absolute; left: 0; top: 0.05em; width: 1.5em; height: 1.5em; border-radius: 50%; background: var(--accent); color: var(--bg); font-weight: 700; font-size: 0.9em; display: grid; place-items: center; }
+
+/* 5 確かめる */
+.ladder { display: grid; grid-template-columns: repeat(4, 1fr); align-items: end; gap: 0.8em; }
+.rung { background: var(--panel); border: 1px solid var(--line); border-radius: 0.7em; padding: 0.8em 0.9em; display: flex; flex-direction: column; gap: 0.35em; }
+.rung .lv { font-size: 0.9em; font-weight: 700; color: var(--muted); }
+.rung h3 { margin: 0; font-size: 1.4em; }
+.rung p { font-size: 1.18em; }
+.rung:nth-child(1) { min-height: 11em; }
+.rung:nth-child(2) { min-height: 13.5em; }
+.rung:nth-child(3) { min-height: 16em; border-color: color-mix(in srgb, var(--accent) 45%, transparent); }
+.rung:nth-child(4) { min-height: 18.5em; border-color: color-mix(in srgb, var(--accent) 70%, transparent); background: color-mix(in srgb, var(--accent-soft) 55%, var(--panel)); }
+.axis { display: flex; justify-content: space-between; font-size: 0.95em; color: var(--muted); border-top: 2px solid var(--line); padding-top: 0.3em; }
+.verify { grid-template-rows: 1fr auto auto; }
+.duo { display: grid; grid-template-columns: 1fr 1fr; gap: 1em; }
+
+/* 6 守り */
+.guard { grid-template-columns: 1.15fr 1fr; }
+.guard table { font-size: 1.04em; }
+.guard .wall div { font-size: 1.1em; padding: 0.5em 0.9em; }
+table { border-collapse: collapse; width: 100%; font-size: 1.15em; }
+th, td { border-bottom: 1px solid var(--line); padding: 0.38em 0.5em; text-align: left; vertical-align: top; }
+th { font-size: 0.92em; color: var(--muted); font-weight: 600; }
+tr.hl td { background: var(--accent-soft); }
+td:first-child { white-space: nowrap; }
+.wall { display: flex; flex-direction: column; gap: 0.5em; }
+.wall div { display: grid; grid-template-columns: 9em 1fr; gap: 0.8em; align-items: center; padding: 0.65em 0.9em; border-radius: 0.6em; border: 1px solid var(--line); background: var(--panel); font-size: 1.15em; flex: 1; }
+.wall div b { font-size: 1.05em; }
+.wall div:nth-child(2) { border-left: 0.35em solid color-mix(in srgb, var(--accent) 40%, transparent); }
+.wall div:nth-child(3) { border-left: 0.35em solid color-mix(in srgb, var(--accent) 70%, transparent); }
+.wall div:nth-child(4) { border-left: 0.35em solid var(--accent); }
+.wall .weak { color: var(--muted); }
+
+/* 7 並列とクラウド */
+.three { grid-template-columns: repeat(3, 1fr); }
+.three .card { display: flex; flex-direction: column; gap: 0.5em; }
+.three .card h3 { margin: 0; }
+.three li { font-size: 1.3em; }
+.three li + li { margin-top: 0.6em; }
+.three .cmd { font-size: 1.15em; padding: 0.5em 0.8em; }
+
+/* 8 Grok Bot */
+.bot { grid-template-columns: 1.3fr 1fr; }
+.bot .card li { font-size: 1.3em; }
+.bot .card li + li { margin-top: 0.7em; }
+.pairs td:first-child { color: var(--muted); }
+.quote { font-size: 1.5em; font-weight: 700; color: var(--accent); }
+
+/* 9 1日の流れ */
+.day { grid-template-columns: repeat(3, 1fr); position: relative; }
+.time { display: flex; flex-direction: column; gap: 0.6em; }
+.time .when { display: flex; align-items: baseline; gap: 0.6em; }
+.time .when b { font-size: 2em; color: var(--accent); }
+.time .when span { font-size: 1.35em; font-weight: 700; }
+.time li { font-size: 1.3em; }
+.time li + li { margin-top: 0.6em; }
+.example { align-self: flex-start; font-size: 0.95em; font-weight: 700; padding: 0.2em 0.8em; border-radius: 999px; background: var(--ng-soft); color: var(--ng); }
+
+/* 10 まとめ */
+.three-steps { grid-template-columns: repeat(3, 1fr); }
+.three-steps .card { display: flex; flex-direction: column; gap: 0.6em; }
+.three-steps .no { font-size: 3.4em; font-weight: 800; color: var(--accent); line-height: 1; }
+.three-steps h3 { font-size: 1.7em; margin: 0; }
+.three-steps .card { justify-content: center; padding: 1.4em 1.6em; }
+.three-steps p { font-size: 1.28em; }
+.start { font-size: 1.2em; }
+
+.hint { position: absolute; right: 1.6em; top: 1.1em; font-size: 0.85em; color: var(--muted); }
+
+/* 狭い画面では 16:9 をやめ、縦に流して中をスクロールする */
+@media (max-width: 720px), (max-aspect-ratio: 1/1) {
+  body { place-items: stretch; }
+  .deck { width: 100vw; height: 100vh; font-size: 14px; }
+  .slide { padding: 1.6em 1.2em 1em; overflow-y: auto; gap: 1em; }
+  .body { flex: none; min-height: auto; }
+  .cover { padding-left: 1.2em; padding-right: 1.2em; justify-content: flex-start; }
+  .cover h1 { font-size: 2em; }
+  h2 { font-size: 1.6em; }
+  .body, .versus, .map, .goal, .ladder, .guard, .three, .bot, .day, .three-steps, .duo, .legend { grid-template-columns: minmax(0, 1fr); }
+  .arrow { justify-self: center; transform: rotate(90deg); font-size: 2em; }
+  .rung:nth-child(n) { min-height: 0; }
+  .axis { display: none; }
+  .fact { flex-direction: column; align-items: flex-start; gap: 0.4em; }
+  .chapters { position: static; margin-top: 0.4em; padding-bottom: 4em; }
+  .nav { position: fixed; right: 0.8em; bottom: 0.8em; background: var(--bg); padding: 0.3em 0.5em; box-shadow: 0 2px 8px rgb(0 0 0 / 0.12); border-radius: 999px; border: 1px solid var(--line); }
+  .hint { display: none; }
+  .wall div { grid-template-columns: minmax(0, 1fr); gap: 0.2em; }
+  td:first-child { white-space: normal; }
+}
+@media (prefers-reduced-motion: reduce) { .progress > span { transition: none; } }
+</style>
+</head>
+<body>
+<main class="deck" id="deck" aria-roledescription="スライド" aria-label="全体像: 任せられる開発の構成">
+<div class="progress" aria-hidden="true"><span id="bar"></span></div>
+<p class="hint" id="hint">← → キー・クリックで移動</p>
+
+<!-- 1 表紙 -->
+<section class="slide cover" aria-label="1 / 10 表紙">
+  <p class="kicker">ai-dev-tutor · 全体像</p>
+  <h1>人が張り付かなくても、<br><em>エージェントが安全に開発を進める</em>構成</h1>
+  <p class="lead">A1〜A8 と D02 を全部取り入れると、目標と確かめ方を渡すだけで、エージェントが計画・実装・検証まで進めます。人は承認ボタンではなく、レビューと判断に時間を使えます。</p>
+  <div class="pills"><span><b>1</b>目標を渡す</span><span><b>2</b>自分で確かめさせる</span><span><b>3</b>仕組みで守る</span><span><b>4</b>並べて任せる</span></div>
+  <div class="fact">
+    <div class="num">約 90%</div>
+    <p>Claude Code のコードのうち、Claude が書いている割合。<br>6〜9月にマージされた PR は2倍超、revert の割合は 40% 超減った<br><span class="muted small">@ClaudeDevs 2026-10-16 の告知（A7 で紹介）</span></p>
+  </div>
+  <p class="asof">2026-10-25 時点 · Claude Code 2.1.310 / Opus 5.5 · Grok Bot（2026-10 時点）</p>
+  <nav class="chapters" aria-label="関連する章"><span>関連する章</span><a href="../#/00-intro" target="_top">この教材の使い方</a><a href="../#/a07-parallel" target="_top">A7 並列に動かす</a></nav>
+</section>
+
+<!-- 2 今とこれから -->
+<section class="slide" aria-label="2 / 10 今とこれから">
+  <p class="kicker">今とこれから</p>
+  <h2>毎回承認して見張る開発から、目標を渡して任せる開発へ</h2>
+  <div class="body versus">
+    <div class="card before">
+      <h3>今: 毎回承認して見張る</h3>
+      <ul>
+        <li>編集やコマンドのたびに確認が出る（Manual）</li>
+        <li>「直しました」という報告を、人が後から確かめる</li>
+        <li>「push しないで」と会話で頼む。compact でその発言が消えると効かない</li>
+        <li>1つのセッションに人が付きっきりになる</li>
+      </ul>
+    </div>
+    <div class="arrow" aria-hidden="true">→</div>
+    <div class="card after">
+      <h3>これから: 目標を渡して任せる</h3>
+      <ul>
+        <li>auto mode: 分類モデルが操作を審査し、危険なものだけ止める</li>
+        <li><code>/goal</code> と Stop hook: テストが通るまで終われない</li>
+        <li>deny ルール・hook・sandbox: 禁止は注意ではなく仕組みで</li>
+        <li>worktree・クラウドで並べ、人はレビューと判断をする</li>
+      </ul>
+    </div>
+  </div>
+  <p class="note">前提: 1つのセッションを信頼できてから並べる。確かめ方（A3）と守り（A6）が無いと、確かめていない変更が並列に増える。</p>
+  <nav class="chapters" aria-label="関連する章"><span>関連する章</span><a href="../#/a03-verify" target="_top">A3 確かめ方を渡す</a><a href="../#/a06-guardrails" target="_top">A6 守る</a><a href="../#/a07-parallel" target="_top">A7 並列</a></nav>
+</section>
+
+<!-- 3 全体の地図 -->
+<section class="slide" aria-label="3 / 10 全体の地図">
+  <p class="kicker">全体の地図</p>
+  <h2>A1〜A8 と D02 は、3つの層で役割を分けている</h2>
+  <div class="body map">
+    <div class="layer l1">
+      <h3>土台: 伝える・読ませる</h3>
+      <a class="ch" href="../#/a01-start" target="_top"><b>A1</b>インストールと最初の依頼<span>まず質問して読ませる。effort で深さを調整</span></a>
+      <a class="ch" href="../#/a02-workflow" target="_top"><b>A2</b>Explore → Plan → Implement → Commit<span>計画に「確かめ方」を入れる。context は限られた資源</span></a>
+      <a class="ch" href="../#/a04-memory" target="_top"><b>A4</b>CLAUDE.md・rules・memory<span>短く保つ。テストの実行方法を書く</span></a>
+    </div>
+    <div class="layer l2">
+      <h3>任せる仕組み: 確かめる・守る</h3>
+      <a class="ch" href="../#/a03-verify" target="_top"><b>A3</b>確かめ方を渡す<span>/goal と Stop hook で、通るまで終われない</span></a>
+      <a class="ch" href="../#/a05-skills-agents" target="_top"><b>A5</b>skills と subagents<span>手順は skill に。書いた本人以外が確かめる</span></a>
+      <a class="ch" href="../#/a06-guardrails" target="_top"><b>A6</b>hooks・permissions・sandbox・auto mode<span>守りは注意ではなく仕組みで</span></a>
+    </div>
+    <div class="layer l3">
+      <h3>広げる: 並べる・離れる</h3>
+      <a class="ch" href="../#/a07-parallel" target="_top"><b>A7</b>並列に動かす<span>worktree・Writer / Reviewer・headless</span></a>
+      <a class="ch" href="../#/a08-cloud" target="_top"><b>A8</b>クラウドで動かす<span>cloud sessions・scheduled tasks・GitHub Actions</span></a>
+      <a class="ch" href="../#/d02-grok-bot" target="_top"><b>D02</b>Grok Bot の環境を整える<span>スキル・ルーティン・pstack で同じ考え方を回す</span></a>
+    </div>
+  </div>
+  <nav class="chapters" aria-label="関連する章"><span>カードを押すと各章が開きます</span><a href="../#/00-intro" target="_top">この教材の使い方</a></nav>
+</section>
+
+<!-- 4 任せられる -->
+<section class="slide" aria-label="4 / 10 任せられる">
+  <p class="kicker">任せられる</p>
+  <h2><code>/goal</code> と auto mode で、完了条件まで自律実行</h2>
+  <div class="body goal">
+    <div class="card">
+      <h3>完了条件の書き方（A3 の例）</h3>
+      <div class="cmd"><span class="p">/goal</span> <mark class="m1">ISSUE.md のバグが直り</mark>、<mark class="m2">npm test が終了コード 0 で通る</mark>。<mark class="m3">test/ の期待値は変えない</mark>。<mark class="m4">20 ターンで止める</mark></div>
+      <div class="legend"><span class="m1">終わりの状態</span><span class="m2">確かめ方</span><span class="m3">変えてはいけないもの</span><span class="m4">回数の条項</span></div>
+      <p class="muted small" style="margin-top:0.8em">判定役のモデルはコマンドを実行せず、ファイルも読まない。会話に出た出力で示せる形で書く。</p>
+    </div>
+    <div class="card">
+      <h3>動き方</h3>
+      <ol class="steps">
+        <li>先に <code>Shift+Tab</code> で auto mode にする。<code>/goal</code> は権限モードを変えないので、Manual のままだと <code>npm test</code> のたびに確認が出る</li>
+        <li><code>/goal</code> を設定した時点で、その条件を指示として1ターン目が始まる</li>
+        <li>ターンごとに小さなモデルが条件を判定し、満たすまで続けさせる</li>
+        <li>auto mode では分類モデルが操作を審査し、危険なものだけ止める（v2.1.283 から起動時の既定）</li>
+      </ol>
+    </div>
+  </div>
+  <p class="note">時間ではなく、合否を判定できる完了条件を渡す。D02 では「夜間実行が何も終えない」ときの対処として挙げている。</p>
+  <nav class="chapters" aria-label="関連する章"><span>関連する章</span><a href="../#/a03-verify" target="_top">A3 /goal</a><a href="../#/a06-guardrails" target="_top">A6 auto mode</a><a href="../#/d02-grok-bot" target="_top">D02 つまずきやすい点</a></nav>
+</section>
+
+<!-- 5 自分で確かめる -->
+<section class="slide" aria-label="5 / 10 自分で確かめる">
+  <p class="kicker">自分で確かめる</p>
+  <h2>検証を強制し、「終わりました」ではなく出力を見せさせる</h2>
+  <div class="body verify">
+    <div class="ladder">
+      <div class="rung"><span class="lv">強さ 1</span><h3>プロンプトに書く</h3><p>手軽。忘れられることがある</p></div>
+      <div class="rung"><span class="lv">強さ 2</span><h3><code>/goal</code></h3><p>小さなモデルが条件を判定し、満たすまで続けさせる</p></div>
+      <div class="rung"><span class="lv">強さ 3</span><h3>Stop hook</h3><p>終わろうとするたびにスクリプトが走る。終了コード 2 で差し戻す。決定的</p></div>
+      <div class="rung"><span class="lv">強さ 4</span><h3>検証 subagent・<br><code>/code-review</code></h3><p>別の context で、書いた本人以外が確かめる</p></div>
+    </div>
+    <div class="axis"><span>Claude の注意に頼る</span><span>仕組みで必ず確かめる →</span></div>
+    <div class="duo">
+      <p class="note">確かめる手段を渡すのが最も大事で、最終結果が<b>2〜3倍</b>よくなる（Boris Cherny の見積もり。2026-10-15 の記事が引用）</p>
+      <p class="note">レビューの往復は<b>3回で打ち切り</b>。Stop hook も <code>stop_hook_active</code> を見て差し戻しを一度に限り、回り続けを防ぐ</p>
+    </div>
+  </div>
+  <nav class="chapters" aria-label="関連する章"><span>関連する章</span><a href="../#/a03-verify" target="_top">A3 確かめ方を渡す</a><a href="../#/a05-skills-agents" target="_top">A5 subagents</a><a href="../#/a07-parallel" target="_top">A7 Writer / Reviewer</a></nav>
+</section>
+
+<!-- 6 安全に任せる -->
+<section class="slide" aria-label="6 / 10 安全に任せる">
+  <p class="kicker">安全に任せる</p>
+  <h2>権限モードで手間を減らし、deny ルールと hook で必ず止める</h2>
+  <div class="body guard">
+    <div class="card">
+      <h3>権限モード（確認なしで動くもの）</h3>
+      <table>
+        <tr><th>モード</th><th>動き</th></tr>
+        <tr><td><code>default</code></td><td>読み取りだけ。編集やコマンドは確認</td></tr>
+        <tr><td><code>acceptEdits</code></td><td>読み取り・ファイル編集・よく使うファイル操作</td></tr>
+        <tr><td><code>plan</code></td><td>計画を承認するまでソースを編集しない</td></tr>
+        <tr class="hl"><td><code>auto</code></td><td>分類モデルが審査し、危険なものだけ止める</td></tr>
+        <tr><td><code>dontAsk</code></td><td>許可リストにないものは確認せず拒否（headless 向け）</td></tr>
+        <tr><td><code>bypassPermissions</code></td><td>確認なし。隔離された環境以外では使わない</td></tr>
+      </table>
+      <p class="muted small" style="margin-top:0.5em">auto mode は3回続けて、または合計20回止めると一時停止し、確認ありに戻る</p>
+    </div>
+    <div class="wall">
+      <div><b>CLAUDE.md</b><span class="weak">Claude の注意に頼る。破っても大きな害がないことに</span></div>
+      <div><b>deny ルール</b><span>どのモードでも効く。allow より優先<br><code>"deny": ["Bash(git push *)"]</code></span></div>
+      <div><b>PreToolUse hook</b><span>スクリプトが直前に走り、終了コード 2 で理由付きで止める</span></div>
+      <div><b>sandbox</b><span>書き込める場所と通信先を OS レベルで制限し、被害の範囲を絞る</span></div>
+      <p class="note">既定が auto でも、deny ルール・hooks・sandbox を重ねる考え方は変わらない</p>
+    </div>
+  </div>
+  <nav class="chapters" aria-label="関連する章"><span>関連する章</span><a href="../#/a06-guardrails" target="_top">A6 hooks・permissions・sandbox・auto mode</a></nav>
+</section>
+
+<!-- 7 並列とクラウド -->
+<section class="slide" aria-label="7 / 10 並列とクラウド">
+  <p class="kicker">並列とクラウド</p>
+  <h2>手元で並べ、クラウドに渡し、決まった時刻に動かす</h2>
+  <div class="body three">
+    <div class="card">
+      <span class="tag">worktree</span>
+      <h3>手元で並べる</h3>
+      <div class="cmd">claude -w add-search</div>
+      <ul>
+        <li>作業ごとに checkout とブランチを分け、互いに干渉させない</li>
+        <li>書いたセッションとは別のセッションにレビューさせる</li>
+        <li>並列のタスクはファイルの境目で分ける</li>
+      </ul>
+    </div>
+    <div class="card">
+      <span class="tag">cloud sessions</span>
+      <h3>クラウドに渡す</h3>
+      <ul>
+        <li>タスクごとに新しい VM。手元で計画し、クラウドで実装し、teleport で戻す</li>
+        <li>依頼は確かめ方まで書いた自己完結したチケットにする</li>
+        <li>「npm test を30回続けて回して証明して」に、40回回して失敗0を示した例がある</li>
+      </ul>
+    </div>
+    <div class="card">
+      <span class="tag">scheduled tasks</span>
+      <h3>時刻やイベントで動かす</h3>
+      <ul>
+        <li>スケジュール（最短で毎時）・HTTP エンドポイント・GitHub のイベントで起動し、毎回 cloud session として動く</li>
+        <li>承認の確認なしで動き、既定では <code>claude/</code> で始まるブランチに push する</li>
+        <li>手元で動かすなら Desktop や <code>/loop</code></li>
+      </ul>
+    </div>
+  </div>
+  <nav class="chapters" aria-label="関連する章"><span>関連する章</span><a href="../#/a07-parallel" target="_top">A7 並列に動かす</a><a href="../#/a08-cloud" target="_top">A8 クラウドで動かす</a></nav>
+</section>
+
+<!-- 8 Grok Bot + pstack -->
+<section class="slide" aria-label="8 / 10 Grok Bot と pstack">
+  <p class="kicker">Grok Bot ＋ pstack</p>
+  <h2>ルーティンや検証スキルで、同じ考え方を回す</h2>
+  <div class="body bot">
+    <div class="card">
+      <h3>Claude Code の考え方と、Grok Bot・pstack での形</h3>
+      <table class="pairs">
+        <tr><th>考え方</th><th>Grok Bot・pstack での形</th></tr>
+        <tr><td>完了条件を渡す</td><td><code>/poteto-mode</code> ＋ 目標 ＋ 合否を判定できる完了条件</td></tr>
+        <tr><td>自分で確かめさせる</td><td><code>/create-verification-skill</code> で、エージェントがアプリを自分で動かして確かめる</td></tr>
+        <tr><td>決まった時刻に動かす</td><td>ルーティン（「毎朝9時に〜を確認して」）</td></tr>
+        <tr><td>間違いを仕組みにする</td><td>同じ指示を2回書いたらスキルにする。<code>/reflect</code>・<code>/correct</code></td></tr>
+        <tr><td>並べる</td><td><code>/swarm</code>・<code>/arena</code>。同じファイルは worktree かクラウドに分離</td></tr>
+      </table>
+      <p class="muted small" style="margin-top:0.5em">左の列は対応づけのための、この教材での見立て</p>
+    </div>
+    <div class="card" style="display:flex;flex-direction:column;gap:0.8em">
+      <p class="quote">「go fast するなら、まず go deep」</p>
+      <p class="muted small">pstack の README の標語</p>
+      <ul>
+        <li>外部への送信・投稿・購入は、毎回ユーザーの承認が要る。読み取り中心で始める</li>
+        <li>ビルド成功だけで完了報告されたら、実コマンド・実データでの確認を求める（prove-it-works）</li>
+        <li>box のファイル・ツール・ログインは全エージェントで共有。デスクトップはエージェントごとに別</li>
+      </ul>
+    </div>
+  </div>
+  <nav class="chapters" aria-label="関連する章"><span>関連する章</span><a href="../#/d02-grok-bot" target="_top">D02 Grok Bot の環境を整える</a></nav>
+</section>
+
+<!-- 9 1日の流れの例 -->
+<section class="slide" aria-label="9 / 10 1日の流れの例">
+  <p class="kicker">1日の流れの例</p>
+  <h2>朝に目標を渡し、昼にレビューし、夜は自動で直させる</h2>
+  <p class="example">これは各章の仕組みを組み合わせた一例です。決まった手順ではありません</p>
+  <div class="body day">
+    <div class="card time">
+      <div class="when"><b>朝</b><span>目標を渡す</span></div>
+      <ul>
+        <li>plan mode で計画を立ててコミットする（A2）</li>
+        <li>背景・やること・確かめ方を書いたチケットを、cloud session や worktree に配る（A7・A8）</li>
+        <li>各セッションに <code>/goal</code> で完了条件を渡す（A3）</li>
+      </ul>
+    </div>
+    <div class="card time">
+      <div class="when"><b>昼</b><span>レビューする</span></div>
+      <ul>
+        <li>書いたセッションとは別の context や <code>/code-review</code> にレビューさせる（A3・A7）</li>
+        <li>人の承認の数は、変更のリスクで決める（A7）</li>
+        <li>結果を teleport で手元に移し、<code>npm test</code> で確かめる（A8）</li>
+      </ul>
+    </div>
+    <div class="card time">
+      <div class="when"><b>夜</b><span>自動で直させる</span></div>
+      <ul>
+        <li>Auto-fix・<code>/autofix-pr</code> で、失敗したチェックやレビューコメントに対応させる（A8）</li>
+        <li>あいまいな点や設計に関わる点は、Claude が人に聞く（A8）</li>
+        <li>scheduled tasks や Grok Bot のルーティンで、翌朝の点検を回す（A8・D02）</li>
+      </ul>
+    </div>
+  </div>
+  <nav class="chapters" aria-label="関連する章"><span>関連する章</span><a href="../#/a02-workflow" target="_top">A2</a><a href="../#/a03-verify" target="_top">A3</a><a href="../#/a07-parallel" target="_top">A7</a><a href="../#/a08-cloud" target="_top">A8</a><a href="../#/d02-grok-bot" target="_top">D02</a></nav>
+</section>
+
+<!-- 10 まとめ -->
+<section class="slide" aria-label="10 / 10 まとめ">
+  <p class="kicker">まとめ</p>
+  <h2>始めるための3ステップ</h2>
+  <div class="body three-steps">
+    <div class="card">
+      <span class="no">1</span>
+      <h3>確かめ方を渡す</h3>
+      <p>テストの実行方法を CLAUDE.md に書き、Stop hook と <code>/goal</code> で「通るまで終われない」にする。</p>
+      <p class="muted small">A3・A4</p>
+    </div>
+    <div class="card">
+      <span class="no">2</span>
+      <h3>守りを仕組みにする</h3>
+      <p>auto mode で確認の手間を減らし、deny ルール・PreToolUse hook・sandbox を重ねる。</p>
+      <p class="muted small">A6</p>
+    </div>
+    <div class="card">
+      <span class="no">3</span>
+      <h3>任せる範囲を広げる</h3>
+      <p>1つのセッションを信頼できてから、worktree・cloud sessions・scheduled tasks・Grok Bot のルーティンへ広げる。</p>
+      <p class="muted small">A7・A8・D02</p>
+    </div>
+  </div>
+  <p class="start">まずは <a href="../#/00-intro" target="_top">この教材の使い方</a> で workspace を作り、<a href="../#/a01-start" target="_top">A1</a> から順に進めてください。</p>
+  <nav class="chapters" aria-label="関連する章"><span>関連する章</span><a href="../#/a03-verify" target="_top">A3</a><a href="../#/a04-memory" target="_top">A4</a><a href="../#/a06-guardrails" target="_top">A6</a><a href="../#/a07-parallel" target="_top">A7</a><a href="../#/a08-cloud" target="_top">A8</a><a href="../#/d02-grok-bot" target="_top">D02</a></nav>
+</section>
+
+<div class="nav">
+  <button type="button" id="prev" aria-label="前のスライド">‹</button>
+  <span class="count" id="count" aria-live="polite"></span>
+  <button type="button" id="next" aria-label="次のスライド">›</button>
+</div>
+</main>
+<script>
+(() => {
+  const slides = [...document.querySelectorAll(".slide")];
+  const deck = document.getElementById("deck");
+  let i = 0;
+  const show = (n) => {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach((s, k) => { s.classList.toggle("active", k === i); s.setAttribute("aria-hidden", String(k !== i)); s.scrollTop = 0; });
+    document.getElementById("count").textContent = `${i + 1} / ${slides.length}`;
+    document.getElementById("bar").style.width = `${((i + 1) / slides.length) * 100}%`;
+    document.getElementById("prev").disabled = i === 0;
+    document.getElementById("next").disabled = i === slides.length - 1;
+  };
+  const start = Number(new URLSearchParams(location.search).get("slide"));
+  show(Number.isInteger(start) && start > 0 ? start - 1 : 0);
+
+  document.getElementById("prev").addEventListener("click", (e) => { e.stopPropagation(); show(i - 1); });
+  document.getElementById("next").addEventListener("click", (e) => { e.stopPropagation(); show(i + 1); });
+  // リンクやボタン以外をクリックすると次へ。左の 1/4 なら前へ
+  deck.addEventListener("click", (e) => {
+    if (e.target.closest("a, button") || getSelection().toString()) return;
+    const r = deck.getBoundingClientRect();
+    show(e.clientX - r.left < r.width / 4 ? i - 1 : i + 1);
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.altKey || e.ctrlKey || e.metaKey) return;
+    const k = e.key;
+    if (["ArrowRight", "PageDown", " "].includes(k)) show(i + 1);
+    else if (["ArrowLeft", "PageUp", "Backspace"].includes(k)) show(i - 1);
+    else if (k === "Home") show(0);
+    else if (k === "End") show(slides.length - 1);
+    else if (/^[0-9]$/.test(k)) show(k === "0" ? 9 : Number(k) - 1);
+    else return;
+    e.preventDefault();
+  });
+  let x0 = null;
+  deck.addEventListener("touchstart", (e) => { x0 = e.touches[0].clientX; }, { passive: true });
+  deck.addEventListener("touchend", (e) => {
+    if (x0 === null) return;
+    const dx = e.changedTouches[0].clientX - x0;
+    x0 = null;
+    if (Math.abs(dx) > 50) show(dx < 0 ? i + 1 : i - 1);
+  });
+
+  // 明暗は教材サイトに合わせる。埋め込まれていれば親の data-theme、単独なら保存した設定か OS の設定
+  const root = document.documentElement;
+  const theme = () => {
+    let t = null;
+    try { if (window.parent !== window) t = window.parent.document.documentElement.dataset.theme || null; } catch {}
+    if (!t && window.parent === window) { try { t = localStorage.getItem("theme"); } catch {} }
+    if (t === "dark" || t === "light") root.dataset.theme = t; else delete root.dataset.theme;
+  };
+  theme();
+  try {
+    if (window.parent !== window) new window.parent.MutationObserver(theme).observe(window.parent.document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  } catch {}
+})();
+</script>
+</body>
+</html>
