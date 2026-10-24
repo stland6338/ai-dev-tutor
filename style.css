@@ -47,7 +47,7 @@ pre { background: var(--code-bg); padding: 12px 14px; border-radius: 8px; overfl
   padding: 10px 20px; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--line);
 }
-.brand { font-weight: 700; color: var(--ink); text-decoration: none; letter-spacing: 0.02em; }
+.brand { font-weight: 700; color: var(--ink); text-decoration: none; letter-spacing: 0.02em; white-space: nowrap; }
 .overall { margin-left: auto; display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
 .bar { width: 120px; height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; }
 .bar > span { display: block; height: 100%; background: var(--ok); }
@@ -87,6 +87,8 @@ main:focus { outline: none; }
 .content table { border-collapse: collapse; width: 100%; font-size: 14px; display: block; overflow-x: auto; }
 .content th, .content td { border: 1px solid var(--line); padding: 6px 10px; text-align: left; vertical-align: top; }
 .content th { background: var(--code-bg); }
+/* 図は白地で描いているので、暗い表示でも白い台に載せる */
+.content img { display: block; max-width: 100%; height: auto; margin: 16px 0; padding: 8px; background: #fff; border: 1px solid var(--line); border-radius: 10px; }
 .content blockquote { margin: 16px 0; padding: 8px 14px; border-left: 3px solid var(--line); color: var(--muted); }
 
 /* 課題カード */
@@ -142,5 +144,6 @@ aside { position: sticky; top: 72px; align-self: start; }
   body.toc-open .toc { display: block; }
   main { padding: 16px 16px 60px; }
   .bar { width: 64px; }
+  .overall .muted { display: none; }
   .content h1 { font-size: 23px; }
 }

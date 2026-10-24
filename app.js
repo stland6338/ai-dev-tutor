@@ -21,7 +21,8 @@ const store = {
 
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 const safeUrl = (u) => (/^https?:\/\//.test(String(u ?? "")) ? esc(u) : "#");
-const md = (s) => window.DOMPurify.sanitize(window.marked.parse(s));
+// 章の画像とそのリンクは lessons/ から見たパス（../assets/...）で書く。ビューアは教材の直下で開くので付け替える
+const md = (s) => window.DOMPurify.sanitize(window.marked.parse(s)).replaceAll('="../assets/', '="assets/');
 const $ = (id) => document.getElementById(id);
 
 let LESSONS = [];

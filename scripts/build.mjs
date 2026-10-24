@@ -27,6 +27,7 @@ const CSP = [
 rmSync(DIST, { recursive: true, force: true });
 mkdirSync(join(DIST, "lessons"), { recursive: true });
 for (const f of FILES) cpSync(join(ROOT, f), join(DIST, f));
+cpSync(join(ROOT, "assets"), join(DIST, "assets"), { recursive: true });
 const lessons = lessonIndex();
 for (const f of lessons) cpSync(join(ROOT, "lessons", f), join(DIST, "lessons", f));
 writeFileSync(join(DIST, "lessons", "index.json"), JSON.stringify(lessons) + "\n");

@@ -23,6 +23,8 @@ Anthropic と xAI が今推奨している、AI エージェントとの開発�
 | D Grok | Grok Build と Grok Bot |
 | E・F | LLM アプリの作り方、プロンプトとコンテキストの設計 |
 
+[![学習の全体地図。0 はじめに → A Claude Code 単体（A1〜A8）→ B pstack → C 環境 → D Grok → 次の道具でも開発できる準備。E と F はどこからでも読める応用](../assets/diagrams/roadmap.svg)](../assets/diagrams/roadmap.svg)
+
 ## 「いつの時点の推奨か」を必ず見る
 
 AI 開発ツールの推奨は数か月で変わります。たとえば 2025 年 3 月には「think harder と書くと深く考える」が推奨でしたが、今は `ultrathink` 以外の言葉は効かず、effort の設定が主な調整手段です。
@@ -36,6 +38,8 @@ AI 開発ツールの推奨は数か月で変わります。たとえば 2025 �
 `npm run check` は、手元の `claude --version` が教材のバージョンより新しいと「推奨が変わっている可能性があります」と知らせます。そのときは帯にある公式ページを開いて、差分を確かめてください。
 
 ## 進め方
+
+[![教材の仕組み。① npm start で starter を workspace に複製、② 章を読む、③ 自分か Claude Code が workspace を直す、④ npm run check で判定して progress.json に書く、⑤ ビューアに合否を表示](../assets/diagrams/how-it-works.svg)](../assets/diagrams/how-it-works.svg)
 
 1. workspace を作る
 

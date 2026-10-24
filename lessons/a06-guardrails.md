@@ -81,6 +81,8 @@ hooks は CLAUDE.md と違って必ず実行されます [V]。PreToolUse hook �
 
 ### 守り方の比較
 
+[![守り方の比較。CLAUDE.md・deny ルール・PreToolUse hook・sandbox の順に守りが強くなり、重ねて使う](../assets/diagrams/a06-guard.svg)](../assets/diagrams/a06-guard.svg)
+
 | 守り方 | 何に頼るか | 向いているもの |
 |---|---|---|
 | CLAUDE.md に「push しないで」 | Claude の注意 | 破っても大きな害がないこと |

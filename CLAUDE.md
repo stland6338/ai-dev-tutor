@@ -14,6 +14,7 @@ Anthropic / xAI が推奨する AI エージェント開発を、vimtutor 形式
 - `starter/` — 読み手の workspace の元。`solutions/files/` は同じ配置の模範解答、`solutions/steps.sh` はその後の手順
 - `docs/research-2026-10-24.md` — 章の一次資料（調査メモ）。`[U]` は本文に載せる前に確かめ直す
 - `docs/prompts/` — 外部エージェントに章を書かせるプロンプト
+- `docs/diagrams/*.drawio` — 図の元（draw.io で編集する）。`sh scripts/diagrams.sh` で `assets/diagrams/*.svg` に書き出す（sandbox の外で実行）。章からは `../assets/diagrams/<名前>.svg` で載せる
 
 ## 決まり
 - 推奨は版で変わる。章ごとに `as_of`・`applies_to`・`history` を必ず書き、根拠の URL を `sources` に残す

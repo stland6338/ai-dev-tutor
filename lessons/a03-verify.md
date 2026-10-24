@@ -54,6 +54,8 @@ history:
 
 確かめ方を強制する方法は、弱い順に4段階あります [V]。
 
+[![確かめ方の強制の4段階。1 プロンプトに書く、2 /goal、3 Stop hook、4 検証 subagent・/code-review の順に、Claude の注意に頼らなくなる](../assets/diagrams/a03-verify-ladder.svg)](../assets/diagrams/a03-verify-ladder.svg)
+
 | 強さ | 方法 | 特徴 |
 |---|---|---|
 | 1 | プロンプトに書く（「終える前に npm test を実行して」） | 手軽。忘れられることがある |

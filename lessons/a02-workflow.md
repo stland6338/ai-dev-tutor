@@ -50,6 +50,8 @@ history:
 
 best-practices に書かれている進め方です [V]。
 
+[![Explore → Plan → Implement → Commit の4段階と、それぞれの Claude Code の操作。下に context を管理する5つのコマンド](../assets/diagrams/a02-workflow.svg)](../assets/diagrams/a02-workflow.svg)
+
 | 段階 | すること | Claude Code の操作 |
 |---|---|---|
 | Explore | 関係するファイルを読ませる。まだ書かせない | plan mode（`Shift+Tab`、または `claude --permission-mode plan`） |

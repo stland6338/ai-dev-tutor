@@ -2,6 +2,8 @@
 
 Anthropic と xAI が推奨している AI エージェントとの開発のやり方を、vimtutor のように「読みながら手元を直して」学ぶ教材です。各章に「いつ・どのバージョンの時点の推奨か」と、公式の告知、推奨の年表が付いています。
 
+[![学習の全体地図](assets/diagrams/roadmap.svg)](assets/diagrams/roadmap.svg)
+
 ## はじめ方
 
 ```bash
