@@ -29,6 +29,26 @@ announcements:
     url: https://claude.com/resources/articles/code-review-is-now-generally-available
     summary: Code Review（PR ごとの自動レビュー）が一般提供になった
     verified: true
+  - author: "@ClaudeDevs"
+    date: 2026-10-06
+    url: https://x.com/ClaudeDevs/status/2107542087243907506
+    summary: クラウドセッションの紹介
+    verified: true
+  - author: "@ClaudeDevs"
+    date: 2026-10-08
+    url: https://x.com/ClaudeDevs/status/2108320296323477683
+    summary: Managed Agents による自動化
+    verified: true
+  - author: "@ClaudeDevs"
+    date: 2026-10-15
+    url: https://x.com/ClaudeDevs/status/2110866210573386065
+    summary: Code Review の一般提供
+    verified: true
+  - author: "@ClaudeDevs"
+    date: 2026-10-16
+    url: https://x.com/ClaudeDevs/status/2111209208012210409
+    summary: gzip 化によるクラウドセッションの起動の高速化
+    verified: true
 history:
   - version: 2.0.24
     date: 2025-10-20

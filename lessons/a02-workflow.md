@@ -18,6 +18,11 @@ announcements:
     url: https://x.com/bcherny/status/2007179832300581177
     summary: Claude Code 作者の13の tips。plan mode で計画を詰めてから auto-accept で実装する、など
     verified: false
+  - author: "@trq212"
+    date: 2026-10-19
+    url: https://x.com/trq212/status/2112219173288120531
+    summary: 急がず速度を落として進めることを勧める（Claude Code チームの個人の投稿）
+    verified: true
 history:
   - version: 2025-04 ブログ
     date: 2025-04

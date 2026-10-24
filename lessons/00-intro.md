@@ -9,6 +9,17 @@ estimated_minutes: 10
 sources:
   - url: https://code.claude.com/docs/en/best-practices
     checked: 2026-10-24
+announcements:
+  - author: "@ClaudeDevs"
+    date: 2026-09-30
+    url: https://x.com/ClaudeDevs/status/2105391694741119047
+    summary: 開発者向けの情報サイト claude.dev の公開
+    verified: true
+  - author: "@ClaudeDevs"
+    date: 2026-10-22
+    url: https://x.com/ClaudeDevs/status/2113328526413996100
+    summary: Agent Skills の仕様を外部の団体に寄贈
+    verified: true
 ---
 
 ## この教材は何か

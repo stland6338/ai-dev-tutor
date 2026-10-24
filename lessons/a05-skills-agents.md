@@ -22,6 +22,16 @@ announcements:
     url: https://claude.com/resources/articles/building-agents-when-to-fold-subagents-into-your-main-agent-loop
     summary: subagent を増やすより、1つのループに skills と tool search を組み合わせるほうがよい場面が多い。Claude Code の system prompt も 80% 以上削った
     verified: true
+  - author: "@ClaudeDevs"
+    date: 2026-10-01
+    url: https://x.com/ClaudeDevs/status/2105721434807083061
+    summary: Claude Code の mods の紹介
+    verified: true
+  - author: "@ClaudeDevs"
+    date: 2026-10-22
+    url: https://x.com/ClaudeDevs/status/2113328526413996100
+    summary: Agent Skills の仕様を外部の団体に寄贈
+    verified: true
 history:
   - version: 1.0.60
     date: 2025-07-24

@@ -26,6 +26,11 @@ announcements:
     url: https://claude.com/resources/articles/auto-mode-default-in-claude-code
     summary: auto mode を Claude Code の既定にした理由と、分類モデルが何を確かめるか
     verified: true
+  - author: "@claudeai"
+    date: 2026-10-22
+    url: https://x.com/claudeai/status/2113360845409583307
+    summary: アプリでも auto mode が既定になった
+    verified: true
 history:
   - version: 1.0.38
     date: 2025-06-30

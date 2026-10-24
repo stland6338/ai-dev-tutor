@@ -27,6 +27,11 @@ announcements:
     url: https://claude.com/resources/articles/claude-opus-5-5-built-for-coding-sessions-that-use-more-context
     summary: Opus 5.5 は長く context を多く使うコーディングセッション向けに作られた、という発表
     verified: true
+  - author: "@ClaudeDevs"
+    date: 2026-10-07
+    url: https://x.com/ClaudeDevs/status/2107895955144208813
+    summary: Haiku 5.5 の公開
+    verified: true
 history:
   - version: 0.2.44
     date: 2025-03-15

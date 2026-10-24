@@ -123,6 +123,99 @@ function renderAside(meta) {
     </details>`;
 }
 
+// X の投稿 URL（announcements と sources から）。status の数字 ID を取り出す
+const X_STATUS = /^https:\/\/(?:www\.|mobile\.)?(?:x|twitter)\.com\/([A-Za-z0-9_]{1,15})\/status\/(\d{5,25})(?:[/?#].*)?$/;
+function xPosts(meta) {
+  const seen = new Set();
+  const out = [];
+  for (const a of [...(meta.announcements ?? []), ...(meta.sources ?? [])]) {
+    const m = X_STATUS.exec(String(a.url ?? ""));
+    if (!m || seen.has(m[2])) continue;
+    seen.add(m[2]);
+    out.push({ id: m[2], url: `https://x.com/${m[1]}/status/${m[2]}`, author: a.author ?? `@${m[1]}`, date: a.date, summary: a.summary });
+  }
+  return out;
+}
+
+function renderXPosts(meta) {
+  const posts = xPosts(meta);
+  if (!posts.length) return "";
+  return `
+    <section class="x-posts">
+      <div class="x-head">
+        <h2>Xの関連投稿 <span class="muted">（${posts.length}件）</span></h2>
+        <button type="button" class="x-toggle" aria-expanded="false" aria-controls="x-grid">投稿を表示</button>
+      </div>
+      <div class="x-body" id="x-grid" hidden>
+        <p class="note">X の埋め込みで表示しています（開いたときだけ X に接続します）。読み込めないときはリンクだけを出します。</p>
+        <div class="x-grid">${posts.map((p) => `
+          <div class="x-card" data-tweet-id="${esc(p.id)}">
+            <a class="x-fallback" href="${safeUrl(p.url)}" target="_blank" rel="noopener noreferrer">
+              <span class="who">${esc(p.author)}${p.date ? ` · <time>${esc(p.date)}</time>` : ""}</span>
+              ${p.summary ? `<span class="sum">${esc(p.summary)}</span>` : ""}
+              <span class="open">X で開く ↗</span>
+            </a>
+            <div class="x-embed"></div>
+          </div>`).join("")}</div>
+      </div>
+    </section>`;
+}
+
+// ボタンを押すまで widgets.js を読まない（X へ通信しない）
+function bindXToggle() {
+  const btn = document.querySelector(".x-toggle");
+  if (!btn) return;
+  const body = document.getElementById("x-grid");
+  let embedded = false;
+  btn.addEventListener("click", () => {
+    const open = btn.getAttribute("aria-expanded") !== "true";
+    btn.setAttribute("aria-expanded", String(open));
+    btn.textContent = open ? "投稿を閉じる" : "投稿を表示";
+    body.hidden = !open;
+    if (open && !embedded) { embedded = true; embedXPosts(); }
+  });
+}
+
+// widgets.js は X の投稿がある章を開いたときに一度だけ読む
+let widgetsPromise = null;
+function loadWidgets() {
+  if (window.twttr?.widgets?.createTweet) return Promise.resolve(window.twttr);
+  widgetsPromise ??= new Promise((resolve, reject) => {
+    const s = document.createElement("script");
+    s.src = "https://platform.twitter.com/widgets.js";
+    s.async = true;
+    s.charset = "utf-8";
+    s.onload = () => (window.twttr?.ready ? window.twttr.ready((t) => resolve(t)) : reject(new Error("twttr missing")));
+    s.onerror = () => { widgetsPromise = null; reject(new Error("widgets.js failed")); };
+    document.head.append(s);
+  });
+  return widgetsPromise;
+}
+
+let renderSeq = 0;
+async function embedXPosts() {
+  const seq = ++renderSeq;
+  const cards = [...document.querySelectorAll(".x-card")];
+  if (!cards.length) return;
+  let twttr;
+  try {
+    twttr = await Promise.race([loadWidgets(), new Promise((_, r) => setTimeout(() => r(new Error("timeout")), 8000))]);
+  } catch {
+    return; // リンク表示のまま
+  }
+  if (seq !== renderSeq) return; // 別の章に移った
+  const dark = document.documentElement.dataset.theme
+    ? document.documentElement.dataset.theme === "dark"
+    : matchMedia("(prefers-color-scheme: dark)").matches;
+  for (const card of cards) {
+    const target = card.querySelector(".x-embed");
+    twttr.widgets
+      .createTweet(card.dataset.tweetId, target, { lang: "ja", dnt: true, theme: dark ? "dark" : "light", conversation: "none", align: "center" })
+      .then((el) => { if (el) card.classList.add("embedded"); })
+      .catch(() => {});
+  }
+}
+
 function renderHistory(meta) {
   const h = meta.history ?? [];
   if (!h.length) return "";
@@ -168,6 +261,7 @@ function renderLesson(l) {
         <div class="content">
           <h1>${esc(meta.title)}</h1>
           ${renderBody(l.body, l.exercises)}
+          ${renderXPosts(meta)}
           ${renderHistory(meta)}
           ${renderSources(meta)}
           <nav class="pager">
@@ -179,6 +273,8 @@ function renderLesson(l) {
       </div>
     </article>`;
   document.title = `${meta.title} · ai-dev-tutor`;
+  renderSeq++; // 前の章の描画を捨てる
+  bindXToggle();
 }
 
 function route() {

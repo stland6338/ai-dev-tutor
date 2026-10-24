@@ -147,3 +147,19 @@ aside { position: sticky; top: 72px; align-self: start; }
   .overall .muted { display: none; }
   .content h1 { font-size: 23px; }
 }
+
+/* Xの関連投稿 */
+.x-posts { margin: 2rem 0; }
+.x-posts .note { font-size: .85em; opacity: .75; }
+.x-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 1rem; align-items: start; }
+.x-card { min-width: 0; }
+.x-fallback { display: flex; flex-direction: column; gap: .35rem; padding: .8rem 1rem; border: 1px solid color-mix(in srgb, currentColor 20%, transparent); border-radius: 12px; text-decoration: none; color: inherit; }
+.x-fallback .who { font-weight: 600; }
+.x-fallback .open { font-size: .85em; color: var(--accent, #1d9bf0); }
+.x-card.embedded .x-fallback { display: none; }
+.x-embed .twitter-tweet { margin: 0 auto !important; }
+.x-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.x-head h2 { margin: 0; }
+.x-toggle { font: inherit; padding: .4rem .9rem; border-radius: 999px; border: 1px solid color-mix(in srgb, currentColor 30%, transparent); background: transparent; color: inherit; cursor: pointer; }
+.x-toggle:focus-visible { outline: 2px solid var(--accent, #1d9bf0); outline-offset: 2px; }
+.x-body { margin-top: .8rem; }

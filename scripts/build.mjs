@@ -15,10 +15,11 @@ export function lessonIndex() {
 
 const CSP = [
   "default-src 'self'",
-  "script-src 'self' https://cdn.jsdelivr.net",
+  "script-src 'self' https://cdn.jsdelivr.net https://platform.twitter.com https://cdn.syndication.twimg.com",
+  "frame-src https://platform.twitter.com https://syndication.twitter.com",
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data:",
-  "connect-src 'self'",
+  "img-src 'self' data: https://pbs.twimg.com https://abs.twimg.com https://syndication.twitter.com",
+  "connect-src 'self' https://cdn.syndication.twimg.com",
   "base-uri 'none'",
   "form-action 'none'",
   "frame-ancestors 'none'",

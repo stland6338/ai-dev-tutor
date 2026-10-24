@@ -19,6 +19,7 @@ Anthropic / xAI が推奨する AI エージェント開発を、vimtutor 形式
 ## 決まり
 - 推奨は版で変わる。章ごとに `as_of`・`applies_to`・`history` を必ず書き、根拠の URL を `sources` に残す
 - X の投稿は要約と URL だけ。本文を引用しない。原文を直接確かめていなければ `verified: false`
+- 例外: 本文下の「Xの関連投稿」欄は、閲覧者がボタンで開いたときだけ X 公式の埋め込みを表示する（教材の本文には引用せず、要約と URL だけを書く）
 - 課題を足したら、`starter/` では不合格・`solutions/` では合格になるように両方を直す
 - 外から受け取った章の `command` 課題は、取り込む前に `run` の中身を読む
 - workspace（既定 `~/ai-dev-tutor-workspace`）は教材フォルダの外。中に置くと Claude Code がこの CLAUDE.md まで読む

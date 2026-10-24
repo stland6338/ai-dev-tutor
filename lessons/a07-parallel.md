@@ -23,6 +23,16 @@ announcements:
     url: https://claude.dev/blog/solving-code-review-at-anthropic/
     summary: 「How the Claude Code team does code review」。書いたセッションとは別の context でレビューさせる
     verified: true
+  - author: "@ClaudeDevs"
+    date: 2026-10-14
+    url: https://x.com/ClaudeDevs/status/2110445844675838148
+    summary: デスクトップアプリで並列セッションを扱えるようになった
+    verified: true
+  - author: "@ClaudeDevs"
+    date: 2026-10-16
+    url: https://x.com/ClaudeDevs/status/2111168901723906176
+    summary: Claude Code のコードの約90%を Claude が書いている
+    verified: true
 history:
   - version: 2025-04 ブログ
     date: 2025-04
