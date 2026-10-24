@@ -13,7 +13,7 @@ sources:
 
 ## この教材は何か
 
-Anthropic と xAI が**今**推奨している、AI エージェントとの開発のやり方を、手を動かして身につける教材です。vimtutor のように、読みながら手元のファイルを直していき、`npm run check` で合否を確かめます。
+Anthropic と xAI が今推奨している、AI エージェントとの開発のやり方を、手を動かして身につける教材です。vimtutor のように、読みながら手元のファイルを直していき、`npm run check` で合否を確かめます。
 
 | トラック | 内容 |
 |---|---|
@@ -29,21 +29,23 @@ AI 開発ツールの推奨は数か月で変わります。たとえば 2025 �
 
 そこで各章には次の3つを付けています。
 
-- 本文の上の帯: **何年何月何日に、どの版で確かめた推奨か**（`as_of` と `applies_to`）
-- 本文の横: **公式の告知**。X の投稿や公式ブログで、その章の内容に触れたもの。原文を直接確かめられなかったものには「未確認」の札が付きます
-- 章末: **推奨の年表**。版ごとに何が推奨され、今も有効か（継続・置換・実験）
+- 本文の上の帯: 何年何月何日に、どのバージョンで確かめた推奨か（`as_of` と `applies_to`）
+- 本文の横: 公式の告知。X の投稿や公式ブログで、その章の内容に触れたもの。原文を直接確かめられなかったものには「未確認」の札が付きます
+- 章末: 推奨の年表。バージョンごとに何が推奨され、今も有効か（継続・置換・実験）
 
-`npm run check` は、手元の `claude --version` が教材の版より新しいと「推奨が変わっている可能性があります」と知らせます。そのときは帯にある公式ページを開いて、差分を確かめてください。
+`npm run check` は、手元の `claude --version` が教材のバージョンより新しいと「推奨が変わっている可能性があります」と知らせます。そのときは帯にある公式ページを開いて、差分を確かめてください。
 
 ## 進め方
 
-1. workspace を作る（教材フォルダの外に作ります。Claude Code が教材の CLAUDE.md を読まないようにするため）
+1. workspace を作る
+
+   Claude Code が教材の CLAUDE.md を読まないように、workspace は教材フォルダの外に作ります。
 
    ```bash
    npm start
    ```
 
-   既定の場所は `~/ai-dev-tutor-workspace` です。変えたいときは `TUTOR_WORKSPACE=~/somewhere npm start`。その場合、`npm run check` にも同じ変数を付けます。
+   既定の場所は `~/ai-dev-tutor-workspace` です。変えたいときは `TUTOR_WORKSPACE=~/somewhere npm start` のように指定し、`npm run check` にも同じ変数を付けます。
 
 2. ビューアを開く（任意）
 
@@ -53,7 +55,7 @@ AI 開発ツールの推奨は数か月で変わります。たとえば 2025 �
 
    http://localhost:3250 を開きます。このファイルをエディタで直接読んでも構いません。
 
-3. 各章の **課題** を workspace で行い、判定する
+3. 各章の課題を workspace で行い、判定する
 
    ```bash
    npm run check
@@ -71,11 +73,11 @@ AI 開発ツールの推奨は数か月で変わります。たとえば 2025 �
 ## 最初の課題
 
 <!-- exercise id="00-ready" check="file-contains" path="notes/00-intro.md" pattern="^準備OK: \[x\]" -->
-**課題**: workspace の `notes/00-intro.md` を開き、`準備OK: [ ]` を `準備OK: [x]` に書き換える。
+workspace の `notes/00-intro.md` を開き、`準備OK: [ ]` を `準備OK: [x]` に書き換える。
 <!-- /exercise -->
 
 <!-- exercise id="00-path" check="file-contains" path="notes/00-intro.md" pattern="^workspace の場所: \S+" -->
-**課題**: 同じファイルの `workspace の場所:` の後ろに、workspace の絶対パスを書く。
+同じファイルの `workspace の場所:` の後ろに、workspace の絶対パスを書く。
 <!-- /exercise -->
 
 書けたら `npm run check -- --lesson 00` を実行し、2つとも ✓ になることを確かめます。

@@ -50,15 +50,21 @@ history:
 
 ## 公式の要点
 
-**worktree** [V]（worktrees）
+### worktree
+
+worktrees のページに書かれている使い方です [V]。
 
 - `claude --worktree <name>`（短縮 `-w`）で `.claude/worktrees/<name>` に作業用の checkout を作り、`worktree-<name>` ブランチで起動する
 - `.claude/worktrees/` を `.gitignore` に入れておく
 - gitignore されたファイル（`.env` など）を新しい worktree にも複製したいときは `.worktreeinclude` に書く
 
-**Writer / Reviewer** [V]: 書いたセッションは自分の判断に引きずられます。**別の context**（別セッション、subagent、`/code-review`）に確かめさせます。
+### Writer / Reviewer
 
-**headless** [V]: `claude -p "<依頼>"` で対話なしに実行します。
+書いたセッションは自分の判断に引きずられるので、別の context（別セッション、subagent、`/code-review`）に確かめさせます [V]。
+
+### headless
+
+`claude -p "<依頼>"` で対話なしに実行します [V]。
 
 | オプション | 意味 |
 |---|---|
@@ -66,17 +72,20 @@ history:
 | `--allowedTools "Edit,Bash(npm test *)"` | 使ってよい道具を限定する |
 | `--permission-mode dontAsk` | 許可されていない操作は確認せず拒否する（CI 向け） |
 
-**その他の並列の道具** [V]: `/batch <指示>`（変更を 5〜30 の subagent に分け、それぞれの worktree で進める）、`claude agents`（バックグラウンドのセッションの一覧、research preview）。
+### その他の並列の道具
+
+- `/batch <指示>`: 変更を 5〜30 の subagent に分け、それぞれの worktree で進める [V]
+- `claude agents`: バックグラウンドのセッションを一覧する。research preview [V]
 
 ## ハンズオン
 
-**1. worktree の準備**
+### 1. worktree の準備
 
 <!-- exercise id="a07-ignore" check="file-contains" path="sample-app/.gitignore" pattern="^\.claude/worktrees" -->
-**課題**: `sample-app/.gitignore` に `.claude/worktrees/` を足してコミットする。
+`sample-app/.gitignore` に `.claude/worktrees/` を足してコミットする。
 <!-- /exercise -->
 
-**2. Writer: worktree で機能を足す**
+### 2. Writer: worktree で機能を足す
 
 ```bash
 cd ~/ai-dev-tutor-workspace/sample-app
@@ -89,10 +98,10 @@ tasklog に search コマンドを足して。タイトルに文字列を含む�
 ```
 
 <!-- exercise id="a07-worktree" check="command" cwd="sample-app" run="git branch --list 'worktree-*' | grep -q ." -->
-**課題**: `claude -w` で worktree を作って作業させる。`git branch` に `worktree-` で始まるブランチがあること。
+`claude -w` で worktree を作って作業させる。`git branch` に `worktree-` で始まるブランチがあること。
 <!-- /exercise -->
 
-**3. Reviewer: 別のセッションでレビューする**
+### 3. Reviewer: 別のセッションでレビューする
 
 別のターミナルで、元のフォルダ（worktree ではない方）から起動します。
 
@@ -104,10 +113,10 @@ worktree-add-search ブランチの変更を main と比べてレビューして
 `/code-review` も試します。
 
 <!-- exercise id="a07-review" check="manual" -->
-**課題**: Writer とは別のセッション（または `/code-review`）でレビューさせ、Writer が見落としていた点が出るか確かめる。終えたら `npm run done -- a07-review`。
+Writer とは別のセッション（または `/code-review`）でレビューさせ、Writer が見落としていた点が出るか確かめる。終えたら `npm run done -- a07-review` で完了にする。
 <!-- /exercise -->
 
-**4. headless**
+### 4. headless
 
 ```bash
 cd ~/ai-dev-tutor-workspace/sample-app
@@ -115,10 +124,10 @@ claude -p "src/ の各関数を1行ずつ説明して" --output-format json --al
 ```
 
 <!-- exercise id="a07-headless" check="file-contains" path="notes/a07-headless.json" pattern="\x22result\x22" -->
-**課題**: 上のコマンドで `notes/a07-headless.json` を作る。JSON の中の `result`（答え）と、費用や所要時間の項目を見ておく。
+上のコマンドで `notes/a07-headless.json` を作る。JSON の中の `result`（答え）と、費用や所要時間の項目を見ておく。
 <!-- /exercise -->
 
 ## 振り返り
 
 - 並列にできるのは、1つのセッションを信頼できるようになってからです。A3 の確かめ方と A6 の守りが無いまま並べると、確かめていない変更が並列に増えます（pstack の「fearless parallelism」も同じ前提。B1 で扱います）
-- 次の A8 では、セッションをクラウドで動かします
+- 次の A8 ではセッションをクラウドで動かします

@@ -150,7 +150,7 @@ function main(argv) {
   }
   const notes = versionNotes(lessons, installed);
   result.version_notes = notes;
-  if (notes.length) console.log(`\n版の確認:\n${[...new Set(notes.map((n) => n.replace(/^[^:]+: /, "")))].map((n) => `  ! ${n}`).join("\n")}`);
+  if (notes.length) console.log(`\nバージョンの確認:\n${[...new Set(notes.map((n) => n.replace(/^[^:]+: /, "")))].map((n) => `  ! ${n}`).join("\n")}`);
   console.log(`\n合計 ${pass}/${total}`);
   if (filter) writeProgress(result);
   else writeFileSync(progressFile(), JSON.stringify(result, null, 2) + "\n");

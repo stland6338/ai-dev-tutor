@@ -52,17 +52,21 @@ history:
 
 ## 公式の要点
 
-**どこで動かすか** [V]（Claude Code in the cloud, 2026-10-06）
+### どこで動かすか
+
+Claude Code in the cloud（2026-10-06）に書かれている使い分けです [V]。
 
 | ローカル | クラウド |
 |---|---|
 | ローカルの DB、VPN の内側のサービス、手元のハードウェアが要る作業 | 溜まった作業の消化、並列に多く走らせる作業、信頼しきれない作業 |
 
-- 組み合わせ: **ローカルで計画 → クラウドで実装 → teleport で手元に戻す**
-- 準備: GitHub を連携し、GitHub App を入れ、コミットを push しておく。環境の準備は **setup script** と **SessionStart hook** で
-- クラウドに渡す依頼は、**確かめ方まで書いた自己完結したチケット**にする（その場で質問に答えられないため）
+- 組み合わせ: ローカルで計画 → クラウドで実装 → teleport で手元に戻す
+- 準備: GitHub を連携し、GitHub App を入れ、コミットを push しておく。環境の準備には setup script と SessionStart hook を使う
+- その場で質問に答えられないので、クラウドに渡す依頼は確かめ方まで書いた自己完結したチケットにする
 
-**入り口** [V]
+### 入り口
+
+公式 docs にある入り口です [V]。
 
 | 入り口 | 使い方 |
 |---|---|
@@ -71,25 +75,27 @@ history:
 | scheduled tasks（旧 routines） | スケジュールや GitHub のイベントで起動する |
 | GitHub Actions | `anthropics/claude-code-action@v1`。`/install-github-app` で設定 |
 
-**GitHub Actions の要点** [V]（github-actions）
+### GitHub Actions の要点
 
-- `/install-github-app` で GitHub App・secret・workflow の PR まで用意してくれる（`gh auth login` 済みで、github.com のリポジトリであること）
-- secret は `ANTHROPIC_API_KEY`（API キー）か `CLAUDE_CODE_OAUTH_TOKEN`（サブスクリプション。`claude setup-token` で作る）。**キーをリポジトリに書かない**
+github-actions のページに書かれている要点です [V]。
+
+- `gh auth login` 済みで github.com のリポジトリなら、`/install-github-app` が GitHub App・secret・workflow の PR まで用意してくれる
+- secret は `ANTHROPIC_API_KEY`（API キー）か `CLAUDE_CODE_OAUTH_TOKEN`（サブスクリプション。`claude setup-token` で作る）。キーをリポジトリに書かない
 - `prompt` を渡さなければ `@claude` のメンションに応答し、渡せばイベントで自動実行する
 
 ## ハンズオン
 
-この章の後半はクラウドに sample-app を置く必要があります。**自分の GitHub に private リポジトリを作って push する**のは、あなた自身が判断して行ってください（教材は push を前提にしません）。push しない場合は、ファイルを作る課題だけ行い、manual の課題は飛ばして構いません。
+この章の後半はクラウドに sample-app を置く必要があります。自分の GitHub に private リポジトリを作って push するかは、あなた自身が判断してください。教材は push を前提にしません。push しない場合は、ファイルを作る課題だけ行い、manual の課題は飛ばして構いません。
 
-**1. 自己完結したチケットを書く**
+### 1. 自己完結したチケットを書く
 
 <!-- exercise id="a08-ticket" check="file-contains" path="notes/a08-cloud.md" pattern="^## 確かめ方" -->
-**課題**: `notes/a08-cloud.md` に、クラウドに渡すチケットを書く。「tasklog の list に --done / --todo の絞り込みを足す」を題材に、`## 背景` `## やること` `## 確かめ方` の3節で。確かめ方には実行するコマンドを書く。
+「tasklog の list に --done / --todo の絞り込みを足す」を題材に、クラウドに渡すチケットを `notes/a08-cloud.md` に書く。節は `## 背景` `## やること` `## 確かめ方` の3つにし、確かめ方には実行するコマンドを書く。
 <!-- /exercise -->
 
-**2. セッション開始時の準備を hook にする**
+### 2. セッション開始時の準備を hook にする
 
-クラウドのセッションは毎回まっさらな環境で始まります。SessionStart hook で、始めに知っておくべき状態を Claude に渡します（標準出力が context に入ります）。
+クラウドのセッションは毎回まっさらな環境で始まります。SessionStart hook の標準出力は context に入るので、始めに知っておくべき状態をこの hook で Claude に渡します。
 
 ```json
 "SessionStart": [
@@ -98,21 +104,23 @@ history:
 ```
 
 <!-- exercise id="a08-session-start" check="json-has" path="sample-app/.claude/settings.json" key="hooks.SessionStart" -->
-**課題**: `sample-app/.claude/settings.json` の `hooks` に SessionStart hook を足す（A3・A6 の設定は残す）。
+A3・A6 の設定は残したまま、`sample-app/.claude/settings.json` の `hooks` に SessionStart hook を足す。
 <!-- /exercise -->
 
-**3. GitHub Actions の workflow を用意する**
+### 3. GitHub Actions の workflow を用意する
 
 `/install-github-app` を使うのが公式の近道です。push しない場合は、docs の例を `sample-app/.github/workflows/claude.yml` に写して中身を読みます。
 
 <!-- exercise id="a08-gha" check="file-contains" path="sample-app/.github/workflows/claude.yml" pattern="anthropics/claude-code-action@v1" -->
-**課題**: `claude.yml` を用意する。`permissions` の各行が何のためにあるか（`id-token: write` など）を docs で確かめる。
+`claude.yml` を用意する。`permissions` の各行が何のためにあるか（`id-token: write` など）を docs で確かめる。
 <!-- /exercise -->
 
-**4. クラウドで動かす**（push した場合）
+### 4. クラウドで動かす
+
+push した場合だけ行います。
 
 <!-- exercise id="a08-cloud-run" check="manual" -->
-**課題**: claude.ai/code で sample-app のセッションを始め、手順1のチケットを渡して実装させる。結果を `--teleport` で手元に移すか、PR として受け取り、手元で `npm test` を実行して確かめる。終えたら `npm run done -- a08-cloud-run`。
+claude.ai/code で sample-app のセッションを始め、手順1のチケットを渡して実装させる。結果を `--teleport` で手元に移すか、PR として受け取り、手元で `npm test` を実行して確かめる。終えたら `npm run done -- a08-cloud-run` で完了にする。
 <!-- /exercise -->
 
 ## トラック A のまとめ
@@ -127,4 +135,4 @@ history:
 | A7 | 1つを信頼できてから並べる |
 | A8 | クラウドには自己完結したチケットを渡す |
 
-次のトラック B では、ここまでの公式の流儀と pstack を比べます。
+次のトラック B ではここまでの公式の流儀と pstack を比べます。

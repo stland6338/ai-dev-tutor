@@ -13,7 +13,7 @@ title: 確かめ方を渡す
 track: claude-code            # intro | claude-code | pstack | env | grok | llm-app | prompt
 order: 3                      # トラック内の順
 as_of: 2026-10-24             # 内容を確かめた日
-applies_to: Claude Code 2.1.310 / Opus 5.5   # この版の時点の推奨である、という印
+applies_to: Claude Code 2.1.310 / Opus 5.5   # このバージョンの時点の推奨である、という印
 official_ref: Claude Code 101 · Module 3     # 公式講座の対応箇所（無ければ省略）
 estimated_minutes: 25
 sources:
@@ -36,7 +36,7 @@ history:                      # 推奨の変遷。章末に年表として出す
 
 ## 確認の度合いの印
 
-本文の主張には、必要に応じて次の印を付ける。
+本文の主張には必要に応じて次の印を付ける。
 
 | 印 | 意味 |
 |---|---|
@@ -66,7 +66,7 @@ history:                      # 推奨の変遷。章末に年表として出す
 | `manual` | — | `npm run done <id>` で完了にした |
 
 - 判定は「その課題が本当に働いているか」をできるだけ見る。hook のスクリプトなら、文字列の有無ではなく実行ビットと、入力を渡したときの終了コードを確かめる（`a06-block-script` を参照）
-- 新しい workspace では、どの課題も不合格になるように作る
+- 新しい workspace ではどの課題も不合格になるように作る
 - 各課題の模範解答を `solutions/` に置く。workspace に重ねると全課題が合格になるように作る（`npm run self-test` で確かめる）
   - `solutions/files/` 以下は workspace と同じ配置にする
   - `solutions/steps.sh` は、ファイルを重ねたあとに workspace で実行する手順（git commit など）

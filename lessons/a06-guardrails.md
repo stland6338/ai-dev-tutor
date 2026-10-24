@@ -46,30 +46,40 @@ history:
 
 - 権限モードの違いを説明でき、今の既定を確かめられる
 - `/permissions` の allow / deny で、確認の手間と危険を両方減らせる
-- PreToolUse hook で、特定のコマンドを**必ず**止められる
+- PreToolUse hook で、特定のコマンドを理由付きで止められる
 
 ## 公式の要点
 
-**権限モード** [V]（permissions）
+### 権限モード
+
+permissions のページに書かれているモードです [V]。
 
 | モード | 動き |
 |---|---|
 | `default`（Manual） | 編集やコマンドのたびに確認 |
 | `acceptEdits` | ファイル編集は確認なし、コマンドは確認 |
 | `plan` | 読むだけ。計画を立てる |
-| `auto` | 分類モデルが操作を審査し、危険なものだけ止める。**v2.1.283 から起動時の既定** |
+| `auto` | 分類モデルが操作を審査し、危険なものだけ止める。v2.1.283 から起動時の既定 |
 | `dontAsk` | 許可リストにないものは確認せず拒否（headless 向け） |
 | `bypassPermissions` | 確認なし。隔離された環境以外では使わない |
 
-**allow / deny** [V]: `.claude/settings.json` の `permissions` に書きます。deny は allow より優先されます。
+### allow / deny
+
+`.claude/settings.json` の `permissions` に書きます。deny は allow より優先されます [V]。
 
 ```json
 { "permissions": { "allow": ["Bash(npm test *)", "Bash(npm run *)"], "deny": ["Bash(git push *)"] } }
 ```
 
-**hooks は CLAUDE.md と違って必ず実行される** [V]: PreToolUse hook は道具を使う直前に走り、終了コード 2 で止めます（stderr が理由として Claude に渡る）。`exit 1` は止めません。
+### hooks
 
-**sandbox** [V]: `/sandbox` で、コマンドが書き込める場所と通信先を OS レベルで制限します。許可の確認を減らしつつ、被害の範囲を絞れます。
+hooks は CLAUDE.md と違って必ず実行されます [V]。PreToolUse hook は道具を使う直前に走り、終了コード 2 で止めます。このとき stderr が理由として Claude に渡ります。`exit 1` は止めません。
+
+### sandbox
+
+`/sandbox` で、コマンドが書き込める場所と通信先を OS レベルで制限します。許可の確認を減らしつつ、被害の範囲を絞れます [V]。
+
+### 守り方の比較
 
 | 守り方 | 何に頼るか | 向いているもの |
 |---|---|---|
@@ -80,23 +90,23 @@ history:
 
 ## ハンズオン
 
-**1. 今の権限モードを確かめる**
+### 1. 今の権限モードを確かめる
 
 Claude Code を起動し、`Shift+Tab` でモードを切り替えながら表示を見ます。
 
 <!-- exercise id="a06-mode" check="file-contains" path="notes/a06-guardrails.md" pattern="^起動時の権限モード: (auto|default|acceptEdits|plan|dontAsk|bypassPermissions)" -->
-**課題**: 起動直後のモードを `notes/a06-guardrails.md` に書く（`auto` / `default` などの名前で）。教材の記述（v2.1.283 から auto が既定）と合っているか見る。
+起動直後のモードを、`auto` や `default` などの名前で `notes/a06-guardrails.md` に書く。教材の記述（v2.1.283 から auto が既定）と合っているか見る。
 <!-- /exercise -->
 
-**2. deny ルール**
+### 2. deny ルール
 
 <!-- exercise id="a06-deny" check="file-contains" path="sample-app/.claude/settings.json" pattern="deny[^\]]*Bash\(git push" -->
-**課題**: `sample-app/.claude/settings.json` に `permissions.deny` を足し、`git push` を禁止する。A3 の `hooks` は残したまま、同じファイルに足すこと。
+`sample-app/.claude/settings.json` に `permissions.deny` を足し、`git push` を禁止する。A3 の `hooks` は残したまま、同じファイルに足すこと。
 <!-- /exercise -->
 
-**3. PreToolUse hook で理由付きで止める**
+### 3. PreToolUse hook で理由付きで止める
 
-`sample-app/.claude/hooks/block-push.sh`:
+`sample-app/.claude/hooks/block-push.sh` に次の内容を書きます。
 
 ```sh
 #!/bin/sh
@@ -111,7 +121,7 @@ esac
 exit 0
 ```
 
-入力の JSON から `tool_input.command`（実行しようとしているコマンド）だけを取り出して調べます。JSON 全体を grep すると、コミットメッセージの中の「git push」などにも反応してしまいます。すり抜けがあるので、確実に止めたいことは deny ルールや sandbox と重ねます。
+JSON 全体を grep するとコミットメッセージの中の「git push」などにも反応してしまうので、入力の JSON から `tool_input.command`（実行しようとしているコマンド）だけを取り出して調べます。すり抜けがあるので、確実に止めたいことは deny ルールや sandbox と重ねます。
 
 `settings.json` の `hooks` に足します。
 
@@ -122,18 +132,18 @@ exit 0
 ```
 
 <!-- exercise id="a06-block-script" check="command" cwd="sample-app" run="test -x .claude/hooks/block-push.sh || exit 1; printf '{\042tool_input\042:{\042command\042:\042git push origin main\042}}' | ./.claude/hooks/block-push.sh 2>/dev/null; test $? -eq 2" -->
-**課題**: `block-push.sh` を作り、`chmod +x` する。判定では、`git push` の入力を渡して終了コード 2 で止めるかを実際に確かめる。
+`block-push.sh` を作り、`chmod +x` する。判定では `git push` の入力を渡して終了コード 2 で止めるかを実際に確かめる。
 <!-- /exercise -->
 
 <!-- exercise id="a06-block-hook" check="json-has" path="sample-app/.claude/settings.json" key="hooks.PreToolUse" -->
-**課題**: PreToolUse hook を登録する。Claude に「git push して」と頼み、止められて理由が返ることを確かめる（リモートが無いので、止まらなくても push は失敗します）。
+PreToolUse hook を登録する。Claude に「git push して」と頼み、止められて理由が返ることを確かめる。リモートが無いので、hook が止めなくても push は失敗します。
 <!-- /exercise -->
 
 <!-- exercise id="a06-sandbox" check="manual" -->
-**課題**: `/sandbox` を開き、書き込める場所と通信先の設定を確かめる。終えたら `npm run done -- a06-sandbox`。
+`/sandbox` を開き、書き込める場所と通信先の設定を確かめる。終えたら `npm run done -- a06-sandbox` で完了にする。
 <!-- /exercise -->
 
 ## 振り返り
 
 - deny と hook の両方で push を止めました。どちらか1つで足りる場面と、両方が要る場面を考えてみてください（deny は理由を返せない、hook は条件を細かく書ける）
-- 次の A7 では、守りを固めた上で複数のセッションを並べて動かします
+- 次の A7 では守りを固めた上で複数のセッションを並べて動かします

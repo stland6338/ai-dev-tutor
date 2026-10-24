@@ -44,13 +44,13 @@ history:
 
 ## この章でできるようになること
 
-- 公式が「最も効く」とする **確かめ方を渡す** を、4つの強さで使い分けられる
+- 公式が「最も効く」とする「確かめ方を渡す」を、4つの強さで使い分けられる
 - 再現テストを先に書かせてからバグを直させられる
 - `/goal` と Stop hook で、テストが通るまで Claude が終われないようにできる
 
 ## 公式の要点
 
-2026-10 時点の best-practices は、先頭に「Claude が自分の作業を確かめられる手段を渡す」を置いています [V]。テスト・ビルドの終了コード・スクリーンショットなど、**合否が機械的に出るもの**です。
+2026-10 時点の best-practices は、先頭に「Claude が自分の作業を確かめられる手段を渡す」を置いています [V]。テスト・ビルドの終了コード・スクリーンショットなど、合否が機械的に出るものです。
 
 確かめ方を強制する方法は、弱い順に4段階あります [V]。
 
@@ -58,19 +58,21 @@ history:
 |---|---|---|
 | 1 | プロンプトに書く（「終える前に npm test を実行して」） | 手軽。忘れられることがある |
 | 2 | `/goal <条件>` | ターンごとに小さなモデルが条件を確かめ、満たすまで続けさせる。`/goal clear` で解除 |
-| 3 | Stop hook | 終わろうとするたびにスクリプトが走る。**決定的**（必ず実行される） |
+| 3 | Stop hook | 終わろうとするたびにスクリプトが走る。決定的（必ず実行される） |
 | 4 | 検証用の subagent / `/code-review` | 別の context で、書いた本人以外が確かめる |
 
-Stop hook の仕組み [V]（hooks）:
+### Stop hook の仕組み
+
+hooks のページに書かれている動きです [V]。
 
 - Claude が応答を終えようとすると実行される。終了コード 2 か `{"decision": "block", "reason": "..."}` を返すと、Claude は止まらずに続ける（stderr か reason が理由として渡る）
-- 入力の JSON に `stop_hook_active` がある。**hook によってすでに続行中なら true**。これを見ずに毎回止めると、満たせない条件で回り続ける（連続8回で打ち切られる）
+- 入力の JSON に `stop_hook_active` がある。hook によってすでに続行中なら true になる。これを見ずに毎回止めると、満たせない条件で回り続ける（連続8回で打ち切られる）
 
 ## ハンズオン: 再現テスト → 修正 → 強制
 
 `sample-app/ISSUE.md` のバグ（今日が期限のタスクが期限切れに出る）を直します。
 
-**1. 再現テストを先に書かせる**
+### 1. 再現テストを先に書かせる
 
 ```text
 ISSUE.md のバグを再現するテストを test/overdue.test.js に書いて。
@@ -78,12 +80,12 @@ ISSUE.md のバグを再現するテストを test/overdue.test.js に書いて�
 ```
 
 <!-- exercise id="a03-repro" check="file-contains" path="sample-app/test/overdue.test.js" pattern="overdue\(" -->
-**課題**: `test/overdue.test.js` に、`overdue` の再現テストを書かせる。直す前に落ちることを自分の目で確かめる。
+`test/overdue.test.js` に、`overdue` の再現テストを書かせる。直す前に落ちることを自分の目で確かめる。
 <!-- /exercise -->
 
-**2. Stop hook で「テストが落ちていたら差し戻す」ようにする**
+### 2. テストが落ちていたら Stop hook で差し戻す
 
-`sample-app/.claude/hooks/require-tests.sh` を作ります（Claude に頼んでも構いません）。
+`sample-app/.claude/hooks/require-tests.sh` を作ります。Claude に頼んで作らせても構いません。
 
 ```sh
 #!/bin/sh
@@ -99,9 +101,9 @@ if ! out=$(npm test --silent 2>&1); then
 fi
 ```
 
-- 入力の JSON は node で読みます（文字列の grep だと、Claude の最後の応答に同じ文字列が入っていたときに誤判定するため）
+- 文字列の grep だと Claude の最後の応答に同じ文字列が入っていたときに誤判定するので、入力の JSON は node で読みます
 - 失敗したテストの出力の末尾を stderr に出すと、Claude はそれを理由として受け取り、何が落ちたかが分かります
-- この作りでは**差し戻しは一度だけ**です。ループを防ぐ代わりに、2回目の停止は通します。直りきるまで続けさせたいときは、次の `/goal` と組み合わせます
+- この作りでは差し戻しは一度だけです。ループを防ぐ代わりに、2回目の停止は通します。直りきるまで続けさせたいときは、次の `/goal` と組み合わせます
 
 ```bash
 chmod +x .claude/hooks/require-tests.sh
@@ -120,14 +122,14 @@ chmod +x .claude/hooks/require-tests.sh
 ```
 
 <!-- exercise id="a03-stop-script" check="command" cwd="sample-app" run="test -x .claude/hooks/require-tests.sh && grep -q stop_hook_active .claude/hooks/require-tests.sh" -->
-**課題**: Stop hook のスクリプトを作り、`chmod +x` で実行できるようにする（実行ビットが無いと hook はエラーになるだけで、止める働きをしない）。`stop_hook_active` を見て無限に回らないようにすること。
+Stop hook のスクリプトを作る。実行ビットが無いと hook はエラーになるだけで止める働きをしないので、`chmod +x` で実行できるようにする。`stop_hook_active` を見て無限に回らないようにすること。
 <!-- /exercise -->
 
 <!-- exercise id="a03-stop-hook" check="json-has" path="sample-app/.claude/settings.json" key="hooks.Stop" -->
-**課題**: `.claude/settings.json` に Stop hook を登録する。Claude Code を起動し直し、`/hooks` で登録されたことを確かめる。
+`.claude/settings.json` に Stop hook を登録する。Claude Code を起動し直し、`/hooks` で登録されたことを確かめる。
 <!-- /exercise -->
 
-**3. /goal で直させる**
+### 3. /goal で直させる
 
 ```text
 /goal npm test が全部通る
@@ -136,14 +138,14 @@ chmod +x .claude/hooks/require-tests.sh
 続けて「ISSUE.md のバグを直して」と頼みます。Claude が途中で終わろうとしても、テストが落ちていれば Stop hook が止め、`/goal` が続行させます。
 
 <!-- exercise id="a03-goal" check="manual" -->
-**課題**: `/goal` を設定した状態でバグを直させ、Claude が自分でテストを回して終える様子を見る。終えたら `npm run done -- a03-goal`。
+`/goal` を設定した状態でバグを直させ、Claude が自分でテストを回して終える様子を見る。終えたら `npm run done -- a03-goal` で完了にする。
 <!-- /exercise -->
 
 <!-- exercise id="a03-fixed" check="command" cwd="sample-app" run="node --test test/overdue.test.js" -->
-**課題**: `test/overdue.test.js` が通る。テストを弱めて通すのは不正解。
+`test/overdue.test.js` が通る。テストを弱めて通すのは不正解。
 <!-- /exercise -->
 
 ## 振り返り
 
 - 強さ1（プロンプト）と強さ3（hook）の違いは「Claude の注意に頼るかどうか」です。何度も同じことを頼んでいるなら、hook にする合図です（pstack の encode-lessons-in-structure と同じ考え。B1 で比べます）
-- 次の A4 では、毎回伝えたいことを CLAUDE.md に、条件付きのことを rules に分けます
+- 次の A4 では毎回伝えたいことを CLAUDE.md に、条件付きのことを rules に分けます

@@ -3,7 +3,7 @@
 下の「---ここから---」から「---ここまで---」までを Grok Bot にそのまま貼る。
 出力形式は [docs/lesson-format.md](../lesson-format.md) に合わせてある。形式を変えたらここも直す。
 
-受け取った章を取り込むときの手順:
+受け取った章は、次の手順で取り込む。
 1. `lessons/` に置き、`command` 課題の `run` の中身を読んで確かめる
 2. `starter/` と `solutions/` に、課題に合わせたファイルを足す
 3. `npm test` と `npm run self-test` を通す
@@ -22,28 +22,28 @@
 - 知っていることは説明しない。Claude Code との違いと、Grok Bot に固有の点だけを書く
 
 ## 書く内容（3章まで）
-1. **Grok Bot とは・セットアップ**: 何ができるか、必要なプラン、アプリの導入、サインイン、最初の Bot を作る
-2. **リポジトリを Grok Bot 向けに整える**: GitHub 連携、Cursor Cloud Agents にコーディングを任せる流れ、AGENTS.md / CLAUDE.md のどちらがどこで読まれるか、セットアップスクリプトや secrets の扱い
-3. **開発タスクを頼む**: アプリ・X の @bot・Slack から頼む方法、結果（PR など）の受け取り方と確かめ方
+1. Grok Bot とは・セットアップ: 何ができるか、必要なプラン、アプリの導入、サインイン、最初の Bot を作る
+2. リポジトリを Grok Bot 向けに整える: GitHub 連携、Cursor Cloud Agents にコーディングを任せる流れ、AGENTS.md / CLAUDE.md のどちらがどこで読まれるか、セットアップスクリプトや secrets の扱い
+3. 開発タスクを頼む: アプリ・X の @bot・Slack から頼む方法、結果（PR など）の受け取り方と確かめ方
 
-章の分け方は、内容に合わせて変えてよい（最大3章）。
+章の分け方は内容に合わせて変えてよい（最大3章）。
 
 ## 守ること
-- **根拠は公式資料と、あなた自身の実行結果だけ**: docs.x.ai/grok-bot/*、x.ai/news、xAI と Cursor の公式ドキュメント
+- 根拠にするのは、公式資料（docs.x.ai/grok-bot/*、x.ai/news、xAI と Cursor の公式ドキュメント）と、あなた自身の実行結果だけにする
 - 文ごとに、確認の度合いを次の印で示す
   - `[V]` 公式ページで確認した
   - `[R]` あなたが自分のクラウドコンピュータで実際に動かして確認した
   - `[U]` 未確認・推測
 - 公式資料に書かれていないこと（例: GitHub のリポジトリ権限の詳細、Team Setup Scripts の書式）は、「公式資料に記載なし（YYYY-MM-DD 時点）」と書く。推測で埋めない
-- 版と日付を必ず残す。各章の frontmatter の `as_of` に確認日を、`applies_to` に Grok Bot アプリの版（わからなければ "beta"）を書く。後で推奨が変わったとき、「この時点ではこうだった」と読めるようにするため
-- **公式の告知**: xAI の公式アカウントや関係者の X 投稿で、使い方や推奨の手順に触れたものを各章に1〜3件載せる。載せるのは「投稿者・日付・URL・1行の要約」だけで、本文は引用しない。原文を直接開いて確かめたものは `verified: true`、まとめ記事などで知っただけなら `verified: false`
-- 推奨の移り変わりを frontmatter の `history` に残す（版または日付・その時点の推奨・`current` / `superseded` / `experimental`）
+- 後で推奨が変わったときに「この時点ではこうだった」と読めるように、バージョンと日付を必ず残す。各章の frontmatter の `as_of` に確認日を、`applies_to` に Grok Bot アプリのバージョン（わからなければ "beta"）を書く
+- 公式の告知: xAI の公式アカウントや関係者の X 投稿で、使い方や推奨の手順に触れたものを各章に1〜3件載せる。載せるのは「投稿者・日付・URL・1行の要約」だけで、本文は引用しない。原文を直接開いて確かめたものは `verified: true`、まとめ記事などで知っただけなら `verified: false`
+- 推奨の移り変わりを frontmatter の `history` に残す（バージョンまたは日付・その時点の推奨・`current` / `superseded` / `experimental`）
 - API キー・トークン・メールアドレスなどの値は書かない。必要な箇所は `<YOUR_XAI_API_KEY>` のような置き換え用の文字列にする
 - 地域の制限（@bot の対象外の国など）が日本の読み手に関係するなら書く
 
 ## ハンズオンの形式（必須）
 教材は「vimtutor 形式」にする。読み手は章の Markdown を読みながら、手元のリポジトリを編集し、`npm run check` で合否を確かめる。
-編集を伴う課題は、次の exercise ブロックで書く。
+編集を伴う課題は次の exercise ブロックで書く。
 
 ```markdown
 <!-- exercise id="d02-agents-md" check="file-contains" path="sample-app/AGENTS.md" pattern="^## Test" -->
