@@ -4,6 +4,7 @@ title: この教材の使い方
 track: intro
 order: 0
 as_of: 2026-10-24
+revised: 2026-10-24（2026-09〜10 の公式発信を反映）
 applies_to: Claude Code 2.1.310
 estimated_minutes: 10
 sources:
@@ -13,12 +14,12 @@ announcements:
   - author: "@ClaudeDevs"
     date: 2026-09-30
     url: https://x.com/ClaudeDevs/status/2105391694741119047
-    summary: 開発者向けの情報サイト claude.dev の公開
+    summary: 開発者向けの新しい拠点 claude.dev を公開。Claude Code と API のガイド、開発チームの tips を載せる
     verified: true
   - author: "@ClaudeDevs"
     date: 2026-10-22
     url: https://x.com/ClaudeDevs/status/2113328526413996100
-    summary: Agent Skills の仕様を外部の団体に寄贈
+    summary: Agent Skills を MCP と同じ Agentic AI Foundation に寄贈。2025-12 以降 70 以上のエージェント基盤が採用
     verified: true
 ---
 
@@ -96,3 +97,19 @@ workspace の `notes/00-intro.md` を開き、`準備OK: [ ]` を `準備OK: [x]
 <!-- /exercise -->
 
 書けたら `npm run check -- --lesson 00` を実行し、2つとも ✓ になることを確かめます。
+
+## 2026-10 の公式発信の追い方
+
+2026 年 9 月末から、Claude Code の開発者向けの記事は claude.dev のブログにまとまっています [V]。X では `@ClaudeDevs` が Claude Code と API の更新を、`@claudeai` が製品全体の告知を出しています。各章の「公式の告知」も、この2つのアカウントと claude.dev の記事を主な出典にしています。
+
+この版で反映した主な発信は次のとおりです（詳しくは各章）。
+
+| 日付 | 発信 | 反映した章 |
+|---|---|---|
+| 09-25 | Using Claude Code: Spending your effort | A1・A2 |
+| 10-01 | Claude Code mods | A5・A6 |
+| 10-06 | Claude Code in the cloud（cloud sessions の現場ガイド） | A7・A8 |
+| 10-07 | Haiku 5.5 を Claude Code で提供 | A1・A5 |
+| 10-14 | デスクトップアプリで多数のセッションを並べやすくした | A7 |
+| 10-15 | How the Claude Code team does code review / Code Review の一般提供 | A3・A4・A7・A8 |
+| 10-22 | subagent を main loop に畳む記事 / Agent Skills の寄贈 / Claude アプリの auto mode 既定化 | A5・A6 |

@@ -3,7 +3,8 @@ id: a08-cloud
 title: クラウドで動かす（cloud sessions・GitHub Actions）
 track: claude-code
 order: 8
-as_of: 2026-10-24
+as_of: 2026-10-25
+revised: 2026-10-25（公式 docs との照合で修正）
 applies_to: Claude Code 2.1.310 / Opus 5.5
 official_ref: Claude Code in Action · Automate Repeat Work（Routines and Headless / GitHub Actions）
 estimated_minutes: 40
@@ -18,6 +19,14 @@ sources:
     checked: 2026-10-24
   - url: https://claude.dev/blog/claude-code-in-the-cloud/
     checked: 2026-10-24
+  - url: https://code.claude.com/docs/en/env-vars
+    checked: 2026-10-25
+  - url: https://code.claude.com/docs/en/claude-projects
+    checked: 2026-10-25
+  - url: https://code.claude.com/docs/en/ultrareview
+    checked: 2026-10-25
+  - url: https://code.claude.com/docs/en/desktop-scheduled-tasks
+    checked: 2026-10-25
 announcements:
   - author: Claude blog
     date: 2026-10-06
@@ -32,22 +41,22 @@ announcements:
   - author: "@ClaudeDevs"
     date: 2026-10-06
     url: https://x.com/ClaudeDevs/status/2107542087243907506
-    summary: クラウドセッションの紹介
+    summary: cloud session はタスクごとに新しい VM で Claude Code を動かす。7つの使い方と GitHub の接続方法の現場ガイド
+    verified: true
+  - author: "@ClaudeDevs"
+    date: 2026-10-16
+    url: https://x.com/ClaudeDevs/status/2111209208012210409
+    summary: Claude Code が会話を gzip して送るようになり、cloud session は入力を始めた時点で起動する
     verified: true
   - author: "@ClaudeDevs"
     date: 2026-10-08
     url: https://x.com/ClaudeDevs/status/2108320296323477683
-    summary: Managed Agents による自動化
+    summary: Claude Managed Agents で、Slack や GitHub を定期的に読んで報告を投稿する自動化の作り方
     verified: true
   - author: "@ClaudeDevs"
     date: 2026-10-15
     url: https://x.com/ClaudeDevs/status/2110866210573386065
     summary: Code Review の一般提供
-    verified: true
-  - author: "@ClaudeDevs"
-    date: 2026-10-16
-    url: https://x.com/ClaudeDevs/status/2111209208012210409
-    summary: gzip 化によるクラウドセッションの起動の高速化
     verified: true
 history:
   - version: 2.0.24
@@ -142,6 +151,72 @@ push した場合だけ行います。
 <!-- exercise id="a08-cloud-run" check="manual" -->
 claude.ai/code で sample-app のセッションを始め、手順1のチケットを渡して実装させる。結果を `--teleport` で手元に移すか、PR として受け取り、手元で `npm test` を実行して確かめる。終えたら `npm run done -- a08-cloud-run` で完了にする。
 <!-- /exercise -->
+
+## 2026-10 の更新: cloud session の現場ガイドから
+
+### 始める前に
+
+- `claude --cloud "<依頼>"` は GitHub のリモートを今のブランチで clone するので、先に push する [V]
+- 非公開リポジトリには、GitHub でのサインインに加えて Claude GitHub App のインストールが要る。Auto-fix、GitHub をきっかけにした routine、projects も App が前提 [V]
+- VM はおよそ 4 vCPU、16 GB RAM、30 GB ディスク。使われていない VM は回収されるので、長い作業はこまめにコミットする [V]
+
+### 環境の準備
+
+| 置き場所 | 向いているもの |
+|---|---|
+| setup script | マシンの準備。root で動き `apt install` も使える。exit 0 で終わること。約5分以内なら結果がキャッシュされる |
+| SessionStart hook | プロジェクトの準備（`npm install` など）。ローカルとクラウドで同じように動く |
+| CLAUDE.md | テストの実行方法。個人の `~/.claude` はクラウドに届かない |
+
+クラウドだけで動かしたい手順は `CLAUDE_CODE_REMOTE` を見て分けます [V]。
+
+```json
+"SessionStart": [
+  { "matcher": "startup", "hooks": [ { "type": "command", "command": "[ \"$CLAUDE_CODE_REMOTE\" = true ] && npm ci; node --version && git log --oneline -5" } ] }
+]
+```
+
+> 補足: docs の環境変数一覧によると、cloud session では `CLAUDE_CODE_REMOTE` が自動で `true` になります [V]（https://code.claude.com/docs/en/env-vars ）。
+
+### チケットに「証明」を書く
+
+記事の例では、「npm test を30回続けて回して証明して」と書いたチケットに対し、セッションは40回回して失敗0を示しました [V]。VM の CPU は手元のものではないので、確かめ方は手厚く頼んでかまいません（200回回す、50コミットで二分探索する、遅い結合テストを回すなど）。
+
+### PR を見張らせる
+
+Claude GitHub App を入れたリポジトリでは、セッションに PR を見張らせ、失敗したチェックやレビューコメントに対応させられます [V]。claude.ai/code の CI バーで Auto-fix をオンにするか、ターミナルで PR のブランチにいる状態で `/autofix-pr` を実行します。あいまいな点や設計に関わる点は、Claude が人に聞きます。
+
+### routines（docs では scheduled tasks）
+
+routine（research preview。docs では「cloud scheduled tasks（旧 routines）」）は、プロンプト・リポジトリ・コネクター・環境をまとめて保存したものです [V]。スケジュール（最短で毎時）、専用の HTTP エンドポイント、GitHub のイベントで起動し、毎回 cloud session として動きます。claude.ai/code/routines、デスクトップアプリ、CLI の `/schedule` から作ります。承認の確認なしで動き、既定では `claude/` で始まるブランチに push します。
+
+### Code Review の一般提供
+
+2026-10-15、Code Review が Team と Enterprise で一般提供になりました [V]。管理者はリポジトリごとに Quick / Standard / Deep を選べます。手元では `/code-review` が軽い版として動きます。製品は指摘を投稿するだけで、PR の承認は人の判断のままです。
+
+<!-- exercise id="a08-proof" check="file-contains" path="notes/a08-cloud.md" pattern="[0-9]+ ?回続けて" -->
+手順1のチケットの `## 確かめ方` に、テストを何回続けて通すかを書き足す（例: `npm test を20回続けて通す`）。
+<!-- /exercise -->
+
+### スケジュールの3つの選び方
+
+desktop-scheduled-tasks のページの比較です [V]。
+
+| | Cloud（scheduled tasks） | Desktop | `/loop` |
+|---|---|---|---|
+| どこで動くか | クラウド | 自分のマシン | 自分のマシン |
+| マシンの電源 | 不要 | 要る（アプリを開いている間だけ） | 要る |
+| 開いたセッション | 不要 | 不要 | 要る |
+| 手元のファイル | 使えない（毎回新しく clone） | 使える | 使える |
+| 最短の間隔 | 1時間 | 1分（Claude が設定したとき。フォームでは1時間） | 1分 |
+
+### Claude Projects（public beta）
+
+1つの会話に関連する仕事を次々に渡すと、Claude が仕事ごとにスレッド（たいていは cloud session）を立てて並列に進めます [V]。指示とメモリはプロジェクトで共有され、**Overview** で終わったスレッド、レビュー待ちの PR、返事待ちのスレッドを見られます。複数のリポジトリにまたがる目標や、1セッションに収まらない移行に向きます。2026-10 時点では Pro / Max で段階的に提供中で、Team / Enterprise ではまだ使えません。
+
+### ultrareview（research preview）
+
+`/code-review ultra` は、クラウドで多数のレビュー役のエージェントを走らせ、見つけたバグを1件ずつ再現して確かめてから報告します [V]。引数なしなら、今のブランチと既定ブランチの差分（コミット前の変更も含む）を見ます。起動前に範囲と見積もり費用が出て、確認すると裏で走ります。claude.ai のアカウントで認証が必要で、Bedrock / Agent Platform / Foundry では使えません。Claude が勝手に始めることはありません。
 
 ## トラック A のまとめ
 

@@ -4,6 +4,7 @@ title: CLAUDE.md・rules・memory を短く保つ
 track: claude-code
 order: 4
 as_of: 2026-10-24
+revised: 2026-10-24（2026-09〜10 の公式発信を反映）
 applies_to: Claude Code 2.1.310 / Opus 5.5
 official_ref: Claude Code 101 · Module 4（Customizing: CLAUDE.md）
 estimated_minutes: 25
@@ -18,6 +19,16 @@ announcements:
     url: https://x.com/bcherny/status/2007179832300581177
     summary: チームの CLAUDE.md を git で共有し、Claude が間違えるたびに1行足す。PR で @claude に頼んで更新させる
     verified: false
+  - author: claude.dev blog
+    date: 2026-10-15
+    url: https://claude.dev/blog/solving-code-review-at-anthropic/
+    summary: CLAUDE.md は短く保ち、他の文書を指す。コードオーナーが REVIEW.md でレビューの観点を書く
+    verified: true
+  - author: claude.dev blog
+    date: 2026-10-06
+    url: https://claude.dev/blog/claude-code-in-the-cloud/
+    summary: 個人の ~/.claude は cloud session に届かない。テストの実行方法は CLAUDE.md に書く
+    verified: true
 history:
   - version: 2025-04 ブログ
     date: 2025-04
@@ -106,6 +117,24 @@ CLAUDE.md を 40 行以内にする。
 
 <!-- exercise id="a04-automemory" check="manual" -->
 `/memory` を開き、auto memory がオンか、何が書かれているかを確かめる。終えたら `npm run done -- a04-automemory` で完了にする。
+<!-- /exercise -->
+
+## 2026-10 の更新: CLAUDE.md と REVIEW.md
+
+コードレビューの記事（2026-10-15）は、レビューのたびに CLAUDE.md が読まれるので、大きなコードベースでは短く保ち、他の文書を指すようにしていると書いています [V]。自動レビューは CLAUDE.md の決まりに反するコードと、CLAUDE.md の行を古くする変更も指摘します。
+
+あわせて `REVIEW.md` が紹介されています [V]。コードオーナーが、自分の担当範囲でレビューが何を重視するかを書くファイルです。記事によると、よい REVIEW.md は次の特徴を持ちます。
+
+- 短い
+- そのリポジトリで「失敗とは何か」を書く（docs なら「嘘をつく」、設定なら「誤って振り分ける」）
+- 細かい指摘（nit）の数に上限を設け、見なくてよいパスを挙げる
+- 名前からの推測ではなく、ファイルと行を証拠として求める
+- 件数から始まる要約を求め、直すものが無いときははっきりそう言わせる
+
+cloud session の記事（2026-10-06）は、個人の `~/.claude` はクラウドの VM に届かないので、結合テストの実行方法などはリポジトリの CLAUDE.md に書くよう勧めています [V]。CLAUDE.md・rules・skills・agents・commands はリポジトリと一緒にクラウドへ渡ります。
+
+<!-- exercise id="a04-review-md" check="file-contains" path="sample-app/REVIEW.md" pattern="失敗" -->
+`sample-app/REVIEW.md` を作り、tasklog で「失敗とは何か」を1行、見なくてよいパスを1行書く。
 <!-- /exercise -->
 
 ## 振り返り

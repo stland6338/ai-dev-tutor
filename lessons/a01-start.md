@@ -4,6 +4,7 @@ title: インストールと最初の依頼
 track: claude-code
 order: 1
 as_of: 2026-10-24
+revised: 2026-10-24（2026-09〜10 の公式発信を反映）
 applies_to: Claude Code 2.1.310 / Opus 5.5
 official_ref: Claude Code 101 · Module 1–2（What is Claude Code / Installing）
 estimated_minutes: 20
@@ -30,7 +31,7 @@ announcements:
   - author: "@ClaudeDevs"
     date: 2026-10-07
     url: https://x.com/ClaudeDevs/status/2107895955144208813
-    summary: Haiku 5.5 の公開
+    summary: Haiku 5.5 を Claude Platform と Claude Code で提供。Haiku 4.5 より平均約 75% 安く、Opus 5.5 / Sonnet 5.5 の subagent に向く
     verified: true
 history:
   - version: 0.2.44
@@ -99,6 +100,25 @@ Claude の答えから、tasklog の目的を1文にまとめて書く。Claude 
 
 <!-- exercise id="a01-powerup" check="manual" -->
 Claude Code で `/powerup` を実行し、レッスンを1つ以上終える。終えたら `npm run done -- a01-powerup` で完了にする。
+<!-- /exercise -->
+
+## 2026-10 の更新: effort の目安
+
+claude.dev の「Spending your effort」（2026-09-25、Thariq Shihipar）は、effort を「検証と境界条件のテストにどれだけ手間をかけ、どれだけ Claude 自身の判断で動くかを調整するもの」と説明しています [V]。記事にある目安は次のとおりです。
+
+| effort | 向いている作業（記事の例） |
+|---|---|
+| low | すぐ返事がほしい対話的な作業。ブレインストーミング、たたき台、簡単な変更 |
+| medium | 普段のソフトウェア開発の大半。新機能の実装 |
+| high | 検証や境界条件が大事な作業。既存コードベースのバグ修正 |
+| max | 難しい問題を完全に任せたいとき。アプリを作って検証するまで、重要なソフトウェアの脆弱性探し |
+
+- effort は会話の途中でも `/effort` で変えられます [V]
+- 高い effort が効くのは境界条件の多い作業で、アプローチそのものが間違っている失敗は effort を上げても直らない、と記事は述べています [V]
+- 2026-10-07 に Haiku 5.5 が Claude Code で使えるようになりました。公式の告知は、要約・compaction・DB 問い合わせのような量が多くコストに敏感な作業で、Opus 5.5 や Sonnet 5.5 の subagent として使うことを勧めています [V]
+
+<!-- exercise id="a01-effort" check="file-contains" path="notes/a01-start.md" pattern="^effort の使い分け: .{8,}" -->
+`notes/a01-start.md` に `effort の使い分け:` の行を作り、自分の普段の作業を1つ挙げて、上の表のどの effort で始めるかを書く。
 <!-- /exercise -->
 
 ## 振り返り

@@ -3,11 +3,14 @@ id: a06-guardrails
 title: hooks・permissions・sandbox・auto mode で守る
 track: claude-code
 order: 6
-as_of: 2026-10-24
+as_of: 2026-10-25
+revised: 2026-10-25（公式 docs との照合で修正）
 applies_to: Claude Code 2.1.310 / Opus 5.5
 official_ref: Claude Code in Action · Configure Claude（Permission Modes / Hooks）
 estimated_minutes: 30
 sources:
+  - url: https://code.claude.com/docs/en/permission-modes
+    checked: 2026-10-25
   - url: https://code.claude.com/docs/en/permissions
     checked: 2026-10-24
   - url: https://code.claude.com/docs/en/hooks
@@ -29,7 +32,12 @@ announcements:
   - author: "@claudeai"
     date: 2026-10-22
     url: https://x.com/claudeai/status/2113360845409583307
-    summary: アプリでも auto mode が既定になった
+    summary: 翌週から Claude の Web・デスクトップ・モバイルアプリのセッションも Pro / Max / Team で auto mode が既定になる。いつでも manual に戻せる
+    verified: true
+  - author: claude.dev blog
+    date: 2026-10-06
+    url: https://claude.dev/blog/claude-code-in-the-cloud/
+    summary: cloud session は VM ごとに隔離され、GitHub のトークンは VM に入らない。ネットワークは None / Trusted / Custom / Full から選ぶ
     verified: true
 history:
   - version: 1.0.38
@@ -45,6 +53,10 @@ history:
     advice: auto mode（research preview）。人の代わりに分類モデルが操作を審査する
     status: current
     note: v2.1.283 から全プランで起動時の既定。それ以前は Pro / Max / Team で既定
+  - version: 2026-10 告知
+    date: 2026-10-22
+    advice: Claude の Web・デスクトップ・モバイルアプリのセッションも auto mode が既定（Pro / Max / Team）
+    status: current
 ---
 
 ## この章でできるようになること
@@ -57,16 +69,20 @@ history:
 
 ### 権限モード
 
-permissions のページに書かれているモードです [V]。
+permission-modes のページに書かれているモードです [V]。表の「動き」は、確認なしで動くものを書いています。
 
 | モード | 動き |
 |---|---|
-| `default`（Manual） | 編集やコマンドのたびに確認 |
-| `acceptEdits` | ファイル編集は確認なし、コマンドは確認 |
-| `plan` | 読むだけ。計画を立てる |
+| `default`（Manual） | 確認なしで動くのは読み取りだけ。編集やコマンドは確認する |
+| `acceptEdits` | 読み取り・ファイル編集・よく使うファイル操作（`mkdir`・`mv`・`cp` など）は確認なし。他のコマンドは確認 |
+| `plan` | 読み取りに加え、auto mode が使えるときは分類モデルが通したコマンドも動く（`useAutoModeDuringPlan`、既定でオン）。ソースは計画を承認するまで編集しない |
 | `auto` | 分類モデルが操作を審査し、危険なものだけ止める。v2.1.283 から起動時の既定 |
 | `dontAsk` | 許可リストにないものは確認せず拒否（headless 向け） |
 | `bypassPermissions` | 確認なし。隔離された環境以外では使わない |
+
+- 起動時のモードは `--permission-mode` か `permissions.defaultMode` で決めます。ただしプロジェクトの `.claude/settings.json`・`.claude/settings.local.json` に書いた `auto` と `bypassPermissions` は効きません。auto を既定にしたいなら `~/.claude/settings.json` に書きます [V]
+- 分類モデルが3回続けて、または合計20回止めると、auto mode は一時停止して確認ありに戻ります [V]
+- 会話で「push しないで」と言うと、分類モデルはそれを止める理由として扱います。ただし compact でその発言が消えると効かなくなるので、確実に止めたいことは deny ルールにします [V]
 
 ### allow / deny
 
@@ -75,6 +91,8 @@ permissions のページに書かれているモードです [V]。
 ```json
 { "permissions": { "allow": ["Bash(npm test *)", "Bash(npm run *)"], "deny": ["Bash(git push *)"] } }
 ```
+
+auto mode に入ると、任意のコードを実行できる広い allow（`Bash(*)`、`Bash(python*)` のようなインタープリタ、`npm run *` のようなパッケージマネージャの run）は外され、分類モデルの審査に回ります。`Bash(npm test)` のような狭い allow は残ります。auto mode を抜けると元に戻ります [V]。deny はどのモードでも効きます。
 
 ### hooks
 
@@ -149,6 +167,25 @@ PreToolUse hook を登録する。Claude に「git push して」と頼み、止
 <!-- exercise id="a06-sandbox" check="manual" -->
 `/sandbox` を開き、書き込める場所と通信先の設定を確かめる。終えたら `npm run done -- a06-sandbox` で完了にする。
 <!-- /exercise -->
+
+## 2026-10 の更新
+
+### auto mode が Claude アプリにも広がる
+
+2026-10-22 の告知によると、翌週から Claude の Web・デスクトップ・モバイルアプリのセッションも、Pro / Max / Team で auto mode が既定になります [V]。各操作の承認を求める代わりに自動のチェックが危険な操作を止め、いつでも manual に戻せます。CLI と同じく、既定が auto でも、deny ルール・hooks・sandbox を重ねる考え方は変わりません。
+
+### cloud session という隔離
+
+cloud session の記事（2026-10-06）は、信頼しきれないコード（外部の PR、新しい依存の install script、さっき clone したリポジトリ）はクラウドで動かすよう勧めています [V]。
+
+- タスクごとに新しい VM が作られ、手元の SSH 鍵やクラウド CLI のセッションは無い
+- GitHub のトークンは VM に入らず、プロキシが持つ。セッションは自分の作業ブランチにだけ push できる短命の資格情報を使う
+- ネットワークは None / Trusted / Custom / Full から選ぶ。None でも Anthropic API には通信するので、そこからデータが出る可能性はある
+- 環境変数はその環境を使う全員に見えるので、秘密は入れない
+
+### mod は自分の権限で動く
+
+mod（A5）は、ファイルの読み書き、プロセスの起動、ネットワーク通信ができるコードです [V]。hook と同じく守りに使えますが、入れる mod そのものが守るべき対象にもなります。
 
 ## 振り返り
 

@@ -3,11 +3,16 @@ id: a07-parallel
 title: 並列に動かす（worktree・Writer/Reviewer・headless）
 track: claude-code
 order: 7
-as_of: 2026-10-24
+as_of: 2026-10-25
+revised: 2026-10-25（公式 docs との照合で修正）
 applies_to: Claude Code 2.1.310 / Opus 5.5
 official_ref: best-practices「Run parallel sessions」/ Claude Code in Action · Automate Repeat Work（Headless）
 estimated_minutes: 35
 sources:
+  - url: https://code.claude.com/docs/en/headless
+    checked: 2026-10-25
+  - url: https://code.claude.com/docs/en/permission-modes
+    checked: 2026-10-25
   - url: https://code.claude.com/docs/en/worktrees
     checked: 2026-10-24
   - url: https://code.claude.com/docs/en/best-practices
@@ -26,12 +31,12 @@ announcements:
   - author: "@ClaudeDevs"
     date: 2026-10-14
     url: https://x.com/ClaudeDevs/status/2110445844675838148
-    summary: デスクトップアプリで並列セッションを扱えるようになった
+    summary: Claude Code のデスクトップアプリで、多数のセッションを並べて動かしやすくした。開始が速く、各セッションの状態が常に見える
     verified: true
   - author: "@ClaudeDevs"
     date: 2026-10-16
     url: https://x.com/ClaudeDevs/status/2111168901723906176
-    summary: Claude Code のコードの約90%を Claude が書いている
+    summary: Claude Code のコードの約 90% を Claude が書く。6〜9月にマージされた PR は2倍超、revert の割合は 40% 超減
     verified: true
 history:
   - version: 2025-04 ブログ
@@ -81,6 +86,9 @@ worktrees のページに書かれている使い方です [V]。
 | `--output-format json` | 結果を JSON で受け取る（`stream-json` は `--verbose` と併用） |
 | `--allowedTools "Edit,Bash(npm test *)"` | 使ってよい道具を限定する |
 | `--permission-mode dontAsk` | 許可されていない操作は確認せず拒否する（CI 向け） |
+| `--permission-mode auto` | 一つずつ許可を並べる代わりに、分類モデルに審査させる |
+
+- v2.1.302 以降、`claude -p` はモードを指定しないと Manual（`default`）で始まります。対話で確認できないので、承認が要る呼び出しは拒否されます。`--allowedTools` で許可するか、`--permission-mode auto` を渡します [V]（permission-modes・headless）
 
 ### その他の並列の道具
 
@@ -136,6 +144,34 @@ claude -p "src/ の各関数を1行ずつ説明して" --output-format json --al
 <!-- exercise id="a07-headless" check="file-contains" path="notes/a07-headless.json" pattern="\x22result\x22" -->
 上のコマンドで `notes/a07-headless.json` を作る。JSON の中の `result`（答え）と、費用や所要時間の項目を見ておく。
 <!-- /exercise -->
+
+## 2026-10 の更新
+
+### 並べるときはファイルの境目で分ける
+
+cloud session の記事（2026-10-06）では、同じリポジトリに3つのセッションを並べた結果、1つのセッションが、別のセッションが直している最中のバグを報告しました [V]。セッションは互いの変更を知りません。記事の助言は次のとおりです。
+
+- 並列のタスクはファイルの境目で分ける
+- ブランチは筋の通る順にマージする
+- あるセッションが、別のセッションで直している問題を報告することを想定しておく
+
+2026-10-14 には、デスクトップアプリで多数のセッションを並べやすくなったと告知されています [V]。
+
+### レビューの重さはリスクで決める
+
+Claude Code チームは、変更のリスクで人の承認の数を変えています [V]。
+
+| リスク | 例 | 人の承認 |
+|---|---|---|
+| 低 | docs、文言、フラグの裏の追加 | 自動レビューとセキュリティチェックが通れば不要 |
+| 中 | 普通の製品の変更、キャッシュ・自動更新・system prompt | 1人 |
+| 高 | 最もリスクの高いコードと、常に2人が必要なパス | 2人 |
+
+- 段階を決めるのは書いた人ではなく変更の中身
+- エージェントの承認は人の承認として数えない
+- エージェントに書かせた人も、必要なレビュアーの1人として数える
+
+Writer / Reviewer で並べたときも、最後に何が起きても責任を持つのは人です。
 
 ## 振り返り
 

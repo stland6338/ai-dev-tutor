@@ -4,6 +4,7 @@ title: Explore → Plan → Implement → Commit と context の管理
 track: claude-code
 order: 2
 as_of: 2026-10-24
+revised: 2026-10-24（2026-09〜10 の公式発信を反映）
 applies_to: Claude Code 2.1.310 / Opus 5.5
 official_ref: Claude Code 101 · Module 3（Daily workflows）
 estimated_minutes: 30
@@ -18,10 +19,15 @@ announcements:
     url: https://x.com/bcherny/status/2007179832300581177
     summary: Claude Code 作者の13の tips。plan mode で計画を詰めてから auto-accept で実装する、など
     verified: false
+  - author: Claude blog
+    date: 2026-09-25
+    url: https://claude.dev/blog/spending-your-effort/
+    summary: 新機能は「聞き取り → low で実装 → 見直し → high で検証・テスト」のループで進めている、という筆者の実例
+    verified: true
   - author: "@trq212"
     date: 2026-10-19
     url: https://x.com/trq212/status/2112219173288120531
-    summary: 急がず速度を落として進めることを勧める（Claude Code チームの個人の投稿）
+    summary: （個人の投稿）エージェントで並行作業をしている人の多くは速度を落としたほうがよい。P0 は何か、全力で注意を向けたらどうなるかを考える
     verified: true
 history:
   - version: 2025-04 ブログ
@@ -79,7 +85,7 @@ context は最も限られた資源です [V]。
 | `/btw <質問>` | 履歴に残したくない、ちょっとした質問 |
 | `/context` | 今 context に何が入っているかを見る |
 
-> 補足 [U]: 2026-10 に「Claude Code チームは plan mode を不要と考え始めている」とする外部記事が出ていますが、出典が示されておらず未確認です。公式 docs は条件付きで plan mode を推奨したままです。
+> 補足 [U]: 2026-10 に「Claude Code チームは plan mode を不要と考え始めている」とする外部記事が出ていますが、出典が示されておらず未確認です。公式 docs は条件付きで plan mode を推奨したままです。2026-10-06 の cloud session の記事も、大きな変更では plan mode で計画を立ててコミットし、クラウドで実装する流れを紹介しています [V]。
 
 ## ハンズオン: 失敗しているテストを直す
 
@@ -122,6 +128,19 @@ npm test で落ちているテストの原因を調べて、直す計画を立�
 <!-- exercise id="a02-context" check="file-contains" path="notes/a02-workflow.md" pattern="使い分け: .{10,}" -->
 `notes/a02-workflow.md` に、`/clear` と `/compact` の使い分けを自分の言葉で1文書く。
 <!-- /exercise -->
+
+## 2026-10 の更新: 4段階と effort を組み合わせる
+
+「Spending your effort」の筆者は、新機能の開発で次のループを使っていると書いています [V]。
+
+1. Claude に spec を渡し、足りない点を聞き取らせる
+2. low effort で実装させる
+3. 狙いどおりかを見直し、必要なら low のまま直させる
+4. high effort で検証とテストをさせる
+
+この章の Explore → Plan → Implement → Commit に重ねると、Plan で聞き取り、Implement は軽く、確かめる段階で effort を上げる形になります。同じ記事は、spec を細かく書くほど effort による結果の差が小さくなったとも報告しています [V]。
+
+> 補足: Claude Code チームの Thariq Shihipar は 2026-10-19 に「エージェントで並行作業をしている人の多くは速度を落としたほうがよい。P0 は何か」と投稿しています（個人の投稿で、公式の推奨ではありません）。本人は 2026-10-24 に Anthropic を離れたと投稿しています。
 
 ## 振り返り
 

@@ -3,7 +3,8 @@ id: d02-grok-bot
 title: Grok Bot の環境を整える（pstack 対応）
 track: grok
 order: 2
-as_of: 2026-10-24
+as_of: 2026-10-25
+revised: 2026-10-25（公式 docs との照合で修正）
 applies_to: Grok Bot（2026-10 時点） / pstack
 estimated_minutes: 20
 sources:
@@ -15,6 +16,12 @@ sources:
     checked: 2026-10-24
   - url: https://cursor.com/marketplace/cursor/pstack
     checked: 2026-10-24
+  - url: https://github.com/cursor/plugins/blob/main/pstack/agents/poteto-agent.md
+    checked: 2026-10-25
+  - url: https://cursor.com/help/grok-bot/pages
+    checked: 2026-10-25
+  - url: https://cursor.com/help/grok-bot/plans
+    checked: 2026-10-25
 announcements:
   - author: "@poteto"
     date: 2026-10-23
@@ -24,18 +31,18 @@ announcements:
   - author: "@chenchengpro"
     date: 2026-10-22
     url: https://x.com/chenchengpro/status/2113243170788278767
-    summary: pstack はスキル集ではなく方法論。検証スキルと feature map が先、並列化と自動マージは最後
+    summary: （個人の投稿）pstack はスキル集ではなく方法論。検証スキルと feature map が先、並列化と自動マージは最後
     verified: false
   - author: "@RayBuckton"
     date: 2026-10-24
     url: https://x.com/RayBuckton/status/2113955294661218806
-    summary: Grok Bot に pstack を入れるのがよい
+    summary: （個人の投稿）Grok Bot に pstack を入れるのがよい
     verified: false
 ---
 
 ## この章でやること
 
-Grok Bot を、スキル・ルーティン・コネクタ・メモリ・サブエージェントで整え、poteto 氏の pstack で自律開発の質を上げる手順をまとめます。情報は 2026 年 10 月 24 日時点のものです。
+Grok Bot を、スキル・ルーティン・コネクタ・メモリ・サブエージェントで整え、poteto 氏の pstack で自律開発の質を上げる手順をまとめます。情報は 2026 年 10 月 25 日時点のものです。frontmatter の X 投稿のうち @poteto 以外は公式ではない個人の投稿で、手順の根拠には使っていません。手順の根拠は pstack の README と Grok Bot のヘルプです。
 
 ## 全体像
 
@@ -47,11 +54,16 @@ Grok Bot は1台の共有 Linux マシン（box）を持ち、スキルで手順
 | ルーティン | 定期・イベント駆動の実行 | 毎朝の点検や通知を1つ登録 |
 | コネクタ | Gmail・X・GitHub などへの接続 | 使うサービスだけ接続・認証 |
 | メモリ | 好み・方針の保持 | コーディング方針や口調を伝える |
-| サブエージェント | 調査・実装の並列化 | `poteto-agent` や executor に任せる |
+| サブエージェント | 調査・実装の並列化 | `/poteto-mode` の委任先は `poteto-agent`（pstack/agents/poteto-agent.md） |
 
 ## セットアップ手順
 
-1. **pstack を入れる**: チャットで「pstack をインストールして」と頼む。Cursor では `/add-plugin pstack`。
+1. **pstack を入れる**: チャットで「pstack をインストールして」と頼む。Cursor では `/add-plugin pstack`。Claude Code では先にマーケットプレイスを足してから入れる（README）:
+   ```bash
+   /plugin marketplace add cursor/plugins
+   /plugin install pstack@cursor-plugins
+   ```
+   Claude Code は第三者のマーケットプレイスを自動更新しないので、`/plugin` の marketplaces タブで `cursor-plugins` の auto-update をオンにするか、`claude plugin update pstack@cursor-plugins` で更新する。
 2. **モデルと予算を決める**: `/setup-pstack` で推論予算と役割ごとのモデルを選ぶ。設定は新しいチャットから効く。
 3. **検証スキルを作る**: `/create-verification-skill` で、エージェントがアプリを自分で動かして確かめられるようにする。
 4. **コネクタをつなぐ**: `add-connector` スキルで GitHub・Gmail・X などを必要な分だけ接続する。
@@ -77,6 +89,13 @@ Grok Bot は1台の共有 Linux マシン（box）を持ち、スキルで手順
 
 box のファイル・インストール済みツール・ブラウザのログインは全エージェントで共有されます。デスクトップ（画面）はエージェントごとに別です。
 
+### Pages・Vault・1Password・料金（2026-10 の更新）
+
+- **Pages**（2026-10-21〜、段階的に提供）: Bot がレポートやダッシュボードを「ページ」として作り、頼むたびに更新する。チャットで「〜のページを作って」と頼むとカードで届き、Bot の Library に残る。新しいページは共有するまで自分だけが見られる。Enterprise のチームではまだ使えない（ヘルプ: https://cursor.com/help/grok-bot/pages ）
+- **Vault**（2026-10-22）: Settings → Vault にカード・ログイン・連絡先を保存すると、Bot がチャットに貼らせずにフォームへ入れられる。保存した内容は本人にしか見えない（アプリ内のお知らせ。公開ヘルプの URL は未確認）
+- **1Password**（2026-10-22〜、段階的に提供）: Connect apps → 1Password → Connect でつなぐと、Bot がログインを求めるたびに 1Password アプリで承認し、1Password が入力する。Bot はパスワードを見ない。1Password アプリ 8.12.42 以降が必要（アプリ内のお知らせ。公開ヘルプの URL は未確認）
+- **料金**（2026-10-18）: Grok Bot は The X Subscription の Premium・Super・Ultra に含まれる（Plus と Free には含まれない）。Grok・Cursor と週ごとの利用枠を共有する。Settings → Usage & Billing で枠を確かめる（ヘルプ: https://cursor.com/help/grok-bot/plans ）
+
 ### サブエージェント
 
 重い調査や並列作業は `/swarm` や `/arena` で分けます。並列で同じファイルを触る場合は worktree かクラウドエージェントに分離します。
@@ -87,9 +106,9 @@ poteto（Lauren Tan 氏）は Meta・Netflix・Cursor で働き、React Compiler
 
 1. `/poteto-mode` は23のプレイブック（調査、バグ修正、性能、hillclimb など）から1つを選び、手順を todo にして実行する。
 2. 既定では実装系は Grok、難しい変更・文章・判断は Opus 5.5 に振り分ける。`/setup-pstack` で変えられる。
-3. Claude Code でも `/plugin install pstack@cursor-plugins` で入り、コマンドは `/pstack:poteto-mode` になる。
-4. TLA+ による形式検証スキル（`/create-formal-verification-skill`、`/statechart`）が X 上で注目されている。
-5. poteto 氏は X 上で Grok Bot チームの出荷ペースに触れ、フィードバックを募っている（2026-10-23）。
+3. Claude Code でも `/plugin marketplace add cursor/plugins` の後に `/plugin install pstack@cursor-plugins` で入り、コマンドは `/pstack:poteto-mode` になる。
+4. TLA+ による形式検証のスキル（`/create-formal-verification-skill`、`/statechart`）も入っている。
+5. poteto 氏は X 上で Grok Bot チームの出荷ペースに触れ、フィードバックを募っている（2026-10-23。本人の投稿、原文は未確認）。
 
 ## よく使う pstack スキル
 

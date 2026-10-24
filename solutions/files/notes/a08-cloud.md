@@ -10,3 +10,4 @@ tasklog の list は全件を表示する。完了・未完了で絞りたい。
 ## 確かめ方
 - `npm test` が全部通る（絞り込みのテストを足すこと）
 - `TASKLOG_FILE=/tmp/t.json node src/cli.js add a && TASKLOG_FILE=/tmp/t.json node src/cli.js list --todo` で a が出る
+- `npm test` を 20 回続けて通す

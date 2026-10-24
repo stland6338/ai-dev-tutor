@@ -4,6 +4,7 @@ title: skills と subagents を使い分ける
 track: claude-code
 order: 5
 as_of: 2026-10-24
+revised: 2026-10-24（2026-09〜10 の公式発信を反映）
 applies_to: Claude Code 2.1.310 / Opus 5.5
 official_ref: Anthropic Academy · Introduction to agent skills / Introduction to subagents
 estimated_minutes: 30
@@ -23,14 +24,14 @@ announcements:
     summary: subagent を増やすより、1つのループに skills と tool search を組み合わせるほうがよい場面が多い。Claude Code の system prompt も 80% 以上削った
     verified: true
   - author: "@ClaudeDevs"
-    date: 2026-10-01
-    url: https://x.com/ClaudeDevs/status/2105721434807083061
-    summary: Claude Code の mods の紹介
-    verified: true
-  - author: "@ClaudeDevs"
     date: 2026-10-22
     url: https://x.com/ClaudeDevs/status/2113328526413996100
-    summary: Agent Skills の仕様を外部の団体に寄贈
+    summary: Agent Skills を Agentic AI Foundation に寄贈。ChatGPT・Cursor・GitHub Copilot・VS Code など 70 以上の基盤が採用
+    verified: true
+  - author: "@ClaudeDevs"
+    date: 2026-10-01
+    url: https://x.com/ClaudeDevs/status/2105721434807083061
+    summary: Claude Code を mod で改造できるようになった。mod は plugin に入れて /plugin で入れる
     verified: true
 history:
   - version: 1.0.60
@@ -128,6 +129,32 @@ tools: Read, Grep, Glob, Bash
 <!-- exercise id="a05-choose" check="file-contains" path="notes/a05-skills-agents.md" pattern="^subagent に任せる作業: .{5,}" -->
 `notes/a05-skills-agents.md` に、自分の普段の開発で「subagent に任せる作業」と「skill にする手順」を1つずつ書く。
 <!-- /exercise -->
+
+## 2026-10 の更新
+
+### skills は Claude Code の外でも使える標準になった
+
+2026-10-22、Anthropic は Agent Skills を MCP と同じ Agentic AI Foundation に寄贈しました [V]。告知によると、2025 年 12 月以降、ChatGPT、Cursor、GitHub Copilot、VS Code を含む 70 以上のエージェント基盤がこの標準を取り入れています。この章で書いた `SKILL.md` は、他の道具でも読める形式だということです（トラック C で使います）。
+
+### subagent を畳むかどうかの基準
+
+10-22 の記事は Claude Platform でエージェントを作る人向けですが、Claude Code の system prompt を 80% 以上削ったことにも触れています [V]。subagent を残すのは次のどれかに当たるときです。
+
+- 1つのループで、context が膨らんで性能が落ちたと測れる
+- 新しい context で並列に進め、終わったら捨ててよい作業がある
+- 1つのエージェントでは道具を選びきれない、または system prompt の指示がぶつかる
+
+subagent に分けるなら、問題の種類ではなく context で分け、残りの部分にあまり依存しない作業を渡して、小さな結果を返させるよう勧めています。記事は skill の管理に `/skill-creator`（作成と見直し）と `/skill-doctor`（各 skill の費用と使用頻度を見て、使われていないものを消す）を挙げています。
+
+### mods
+
+2026-10-01 から、Claude Code を mod で改造できます [V]。mod は plugin に入る JavaScript / TypeScript のイベントハンドラーで、動作の変更や UI の追加ができます。Claude Code 2.1.287 以降で既定で有効です。作り方は、Claude に欲しい mod を説明すれば書いてくれます。mod は自分の権限で動くコードなので、信頼できる作者とマーケットプレイスからだけ入れます（A6）。
+
+| 仕組み | 向いているもの |
+|---|---|
+| skills | たまに要る手順・知識 |
+| subagents | 主の context を汚したくない大量の読み込み、書いた本人以外の確認 |
+| mods | Claude Code そのものの見た目と動きを、自分の働き方に合わせる |
 
 ## 振り返り
 

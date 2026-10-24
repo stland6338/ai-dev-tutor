@@ -3,7 +3,8 @@ id: a03-verify
 title: 確かめ方を渡す（/goal と Stop hook）
 track: claude-code
 order: 3
-as_of: 2026-10-24
+as_of: 2026-10-25
+revised: 2026-10-25（公式 docs との照合で修正）
 applies_to: Claude Code 2.1.310 / Opus 5.5
 official_ref: best-practices「Give Claude a way to verify its work」/ Claude Code in Action · Configure Claude
 estimated_minutes: 35
@@ -11,7 +12,7 @@ sources:
   - url: https://code.claude.com/docs/en/best-practices
     checked: 2026-10-24
   - url: https://code.claude.com/docs/en/goal
-    checked: 2026-10-24
+    checked: 2026-10-25
   - url: https://code.claude.com/docs/en/hooks
     checked: 2026-10-24
   - url: https://support.claude.com/en/articles/14554000
@@ -21,10 +22,16 @@ announcements:
     date: 2026-01-03
     url: https://x.com/bcherny/status/2007179832300581177
     summary: 「Claude に自分の仕事を確かめる手段を渡すと品質が2〜3倍になる」が最重要の tip として挙げられている
-    verified: false
+    verified: true
+    note: 2026-10-15 の claude.dev の記事が引用しており、そこで確かめた
   - author: Claude Help Center
     url: https://support.claude.com/en/articles/14554000
     summary: 「Claude Code power user tips」。確かめる手段を渡すことを1番目の tip にしている
+    verified: true
+  - author: claude.dev blog
+    date: 2026-10-15
+    url: https://claude.dev/blog/solving-code-review-at-anthropic/
+    summary: 「How the Claude Code team does code review」。確かめ方を渡すことと、新しい context の subagent レビューが PR 前の第1層。Boris Cherny の「2〜3倍」の発言も引用
     verified: true
 history:
   - version: 2025-04 ブログ
@@ -133,11 +140,22 @@ Stop hook のスクリプトを作る。実行ビットが無いと hook はエ�
 
 ### 3. /goal で直させる
 
+まず `Shift+Tab` で auto mode にしておきます。`/goal` は権限モードを変えないので、Manual のままだと `npm test` のたびに確認が出ます [V]。
+
 ```text
-/goal npm test が全部通る
+/goal ISSUE.md のバグが直り、npm test が終了コード 0 で通る。test/ の期待値は変えない。20 ターンで止める
 ```
 
-続けて「ISSUE.md のバグを直して」と頼みます。Claude が途中で終わろうとしても、テストが落ちていれば Stop hook が止め、`/goal` が続行させます。
+`/goal` は設定した時点で、その条件を指示として1ターン目を始めます。別に「直して」と頼む必要はありません [V]。ターンごとに小さなモデルが条件を判定し、満たすまで続けさせます。途中で終わろうとしても、テストが落ちていれば Stop hook も止めます。
+
+条件の書き方（goal のページより）[V]:
+
+- 判定役のモデルはコマンドを実行せず、ファイルも読みません。会話に出た出力だけで判定します。「npm test が終了コード 0」のように、Claude の出力で示せる形で書きます
+- 終わりの状態を1つ、確かめ方、変えてはいけないもの、の3つを入れます
+- 「20 ターンで止める」のような回数や時間の条項を入れると、走らせすぎを防げます
+- `/goal` だけで状態を見られます。`/goal clear` で解除します
+
+`/goal` の中身は、そのセッションだけの prompt 型 Stop hook です。Stop hook（強さ3）はスクリプトで決定的に判定し、`/goal`（強さ2）はモデルが判定します。
 
 <!-- exercise id="a03-goal" check="manual" -->
 `/goal` を設定した状態でバグを直させ、Claude が自分でテストを回して終える様子を見る。終えたら `npm run done -- a03-goal` で完了にする。
@@ -145,6 +163,28 @@ Stop hook のスクリプトを作る。実行ビットが無いと hook はエ�
 
 <!-- exercise id="a03-fixed" check="command" cwd="sample-app" run="node --test test/overdue.test.js" -->
 `test/overdue.test.js` が通る。テストを弱めて通すのは不正解。
+<!-- /exercise -->
+
+## 2026-10 の更新: 「終わった」ではなく出力を見せさせる
+
+Claude Code チームのコードレビューの記事（2026-10-15）は、PR を出す前の第1層を次のように書いています [V]。
+
+- テスト、ビルド、デザインと比べるスクリーンショットなど、Claude が実行できるものを渡し、「終わりました」と言わせるのではなく出力を見せさせる
+- そのうえで、新しい context の subagent に diff をレビューさせる。どちらも best-practices にある習慣
+- 同じ指摘が繰り返し出るなら、元を直す。skill、lint ルール、CLAUDE.md の更新のどれかにする
+
+この記事は Boris Cherny の「確かめる手段を渡すのが最も大事で、最終結果が2〜3倍よくなる」という見積もりを引用しています。これまで「未確認」としていた @bcherny の tip は、公式ブログでの引用によって確かめられました。
+
+レビューを回し続ける危険にも触れています [V]。書くエージェントとレビューするエージェントは互いに仕事を作り続けることがあり、一晩で50回以上往復した PR もあったそうです。チームは次のように変えました。
+
+- 3回で打ち切り、それ以上は方針を見直すよう作者に促す
+- 最初の数回のあとは、新しい diff だけを見直す
+- 1行ではなく「バグの種類」を指摘し、同じ種類をまとめて直させる
+
+A3 の Stop hook で差し戻しを一度に限ったのも、同じ理由です。
+
+<!-- exercise id="a03-evidence" check="file-contains" path="notes/a03-verify.md" pattern="^見せてほしい出力: .{8,}" -->
+`notes/a03-verify.md` に `見せてほしい出力:` の行を作り、ISSUE.md のバグが直ったと判断するために Claude に見せてほしい出力（コマンドと期待する結果）を書く。
 <!-- /exercise -->
 
 ## 振り返り
