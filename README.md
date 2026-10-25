@@ -17,15 +17,15 @@ npm run done -- <課題ID>   # 手動の課題を完了にする
 
 読むだけなら公開版でも読めます: https://ai-dev-tutor.stland6338.workers.dev （進捗は手元の `npm run check` でしか出ません）
 
-## 収録状況（2026-10-24）
+## 収録状況（2026-10-25）
 
 | トラック | 状態 |
 |---|---|
-| 0 はじめに | 済 |
+| 0 はじめに（00 使い方・01 全体像のスライド） | 済 |
 | A Claude Code 単体（A1〜A8） | 済 |
 | B pstack | 予定 |
 | C 環境（複数エージェント・ローカルとクラウド） | 予定 |
-| D Grok（Grok Build・Grok Bot） | 予定。Grok Bot の章は [docs/prompts/grok-bot-lessons.md](docs/prompts/grok-bot-lessons.md) で Grok Bot に書かせる |
+| D Grok（Grok Build・Grok Bot） | D2 Grok Bot は済（読み物のみ・課題なし）。D1 Grok Build は予定。Grok Bot の章は [docs/prompts/grok-bot-lessons.md](docs/prompts/grok-bot-lessons.md) で Grok Bot に書かせる |
 | E LLM アプリ / F プロンプト | 予定 |
 
 ## 開発
