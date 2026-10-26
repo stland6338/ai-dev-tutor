@@ -11,6 +11,8 @@ sources:
     checked: 2026-10-26
   - url: https://agents.md/
     checked: 2026-10-24
+  - url: https://docs.x.ai/build/features/project-rules
+    checked: 2026-10-24
   - url: https://docs.x.ai/build/features/skills-plugins-marketplaces
     checked: 2026-10-24
   - url: https://docs.x.ai/build/features/mcp-servers
@@ -86,7 +88,7 @@ A4 で作った `sample-app/CLAUDE.md` を、AGENTS.md と CLAUDE.md に分け�
 ### 1. 共通の指示を AGENTS.md に移す
 
 <!-- exercise id="c01-agents-md" check="file-contains" path="sample-app/AGENTS.md" pattern="npm test" -->
-`sample-app/AGENTS.md` を作り、CLAUDE.md にあるコマンド（`npm test`）とコードの決まりを移す。Claude に「CLAUDE.md の中で、どのエージェントにも共通の部分を AGENTS.md に移して」と頼んでも構わない。
+`sample-app/AGENTS.md` を作り、CLAUDE.md にあるコマンド（`npm test`）とコードの決まりを写す。A4 の課題が CLAUDE.md の `npm test` を見ているので、CLAUDE.md にも `npm test` への言及を1つ残す（例: 「終える前の `npm test` は Stop hook が確かめる」）。Claude に「CLAUDE.md の中で、どのエージェントにも共通の部分を AGENTS.md に移して」と頼んでも構わない。
 <!-- /exercise -->
 
 ### 2. CLAUDE.md から読み込む
@@ -111,7 +113,7 @@ claude
 ```
 
 <!-- exercise id="c01-loaded" check="manual" -->
-`/memory`（または `/context`）で、CLAUDE.md と、そこから読み込まれた AGENTS.md の両方が載っていることを確かめる。Grok Build を入れているなら `grok inspect` でも、AGENTS.md と CLAUDE.md が読まれていることを見る。終えたら `npm run done -- c01-loaded` で完了にする。
+`/memory`（または `/context`）で、CLAUDE.md と、そこから読み込まれた AGENTS.md の両方が載っていることを確かめる。Grok Build を入れているなら `grok inspect` でも、読み込まれたルールのファイルに AGENTS.md と CLAUDE.md があることを見る（project-rules のページ）。終えたら `npm run done -- c01-loaded` で完了にする。
 <!-- /exercise -->
 
 ## うまくいかないとき

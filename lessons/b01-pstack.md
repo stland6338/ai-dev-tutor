@@ -11,6 +11,8 @@ sources:
     checked: 2026-10-26
   - url: https://github.com/cursor/plugins/tree/main/pstack/skills
     checked: 2026-10-26
+  - url: https://github.com/cursor/plugins/blob/main/pstack/skills/setup-pstack/SKILL.md
+    checked: 2026-10-26
   - url: https://github.com/cursor/plugins/blob/main/pstack/docs/guide/02-poteto-mode.md
     checked: 2026-10-24
   - url: https://github.com/cursor/plugins/pull/73
@@ -32,7 +34,7 @@ history:
     status: current
   - version: 0.15.32
     date: 2026-10-26
-    advice: 既定のモデルの振り分けは、実装が Grok、難しい変更・文章・判断が Opus 5.5。/setup-pstack で変えられる
+    advice: 既定のモデルの振り分けは、実装が Grok、難しい変更・文章・判断が Opus 5.5。/setup-pstack（Claude Code では /pstack:setup-pstack）で変えられる
     status: current
     note: 手元の版が古いと、ない skill がある（0.15.25 には /statechart などが無い）
 ---
@@ -45,13 +47,13 @@ history:
 
 ## pstack とは
 
-pstack は poteto（Lauren Tan 氏）が日常で使っているスキル群を、Cursor のプラグインとして公開したものです [V]。poteto 氏は Meta・Netflix・Cursor で働き、React Compiler に携わる React コアチームのメンバーです。2026 年 5 月 24 日（日本時間）に cursor/plugins へマージされました（PR #73）[V]。README の標語は「速く進みたいなら、まず深く（go deep first）」です。
+pstack は poteto（Lauren Tan 氏）が日常で使っているスキル群を、Cursor のプラグインとして公開したものです [V]。poteto 氏は Meta・Netflix・Cursor で働き、README（0.15.25）では React Compiler に携わる React コアチームのメンバーと紹介されています。2026 年 5 月 24 日（日本時間）に cursor/plugins へマージされました（PR #73）[V]。README の標語は「速く進みたいなら、まず深く（go deep first）」です。
 
 中心は `/poteto-mode` です。依頼を読んで23のプレイブック（調査、バグ修正、性能改善、hillclimb など）から1つを選び、その手順を todo にして進めます [V]。原則（principle）の skill も多数入っていて、手順の途中で必要なものが読まれます。
 
 ## 公式推奨との比較
 
-A1〜A8 で学んだ公式の推奨と比べると、次のようになります。
+A1〜A9 で学んだ公式の推奨と比べると、次のようになります。
 
 | 観点 | pstack | 公式推奨 | 判断 |
 |---|---|---|---|
@@ -77,11 +79,11 @@ Cursor では `/add-plugin pstack` で入ります。Claude Code では、先に
 
 - コマンドには plugin 名が付き、`/poteto-mode` は `/pstack:poteto-mode` になります [V]
 - Anthropic の公式マーケットプレイスは既定で自動更新されますが、cursor-plugins のような第三者のマーケットプレイスは既定で自動更新されません [V]（plugins/install）。`/plugin` の Marketplaces タブで cursor-plugins を選び、Enable auto-update をオンにします。手で更新するときは `claude plugin update pstack@cursor-plugins` です
-- 入れたあとは `/setup-pstack` で推論の予算と役割ごとのモデルを選びます。設定は新しいチャットから効きます
+- 入れたあとは `/pstack:setup-pstack` で推論の予算と役割ごとのモデルを選びます。設定は新しいチャットから効きます
 
 ## よく使うスキル
 
-0.15.32 の skills/ にあることを確かめた名前だけを載せています [V]。
+0.15.32 の skills/ にあることを確かめた名前だけを載せています [V]。表の名前は Cursor での呼び方で、Claude Code では先頭に `pstack:` が付きます（例: `/pstack:how`）。
 
 | したいこと | スキル |
 |---|---|
@@ -121,12 +123,12 @@ sample-app の新しい依頼（例: 「tasklog に `--due` の書式チェッ�
 | 症状 | 対処 |
 |---|---|
 | ない skill がある | 手元の pstack が古い。`claude plugin update pstack@cursor-plugins` で更新する |
-| モデルの設定が効かない | `/setup-pstack` の設定は新しいチャットから効く |
+| モデルの設定が効かない | `/pstack:setup-pstack` の設定は新しいチャットから効く |
 | 数ターンで mode が外れる | タスクごとに `/pstack:poteto-mode` を付け直す |
-| 費用が高い | 予算を下げる、役割を `inherit-parent` にする、パネルを減らす |
+| 費用が高い | 予算を下げる、役割を `inherit-parent` にする、パネルを減らす（setup-pstack の SKILL.md） |
 | 夜間に走らせても何も終わらない | 時間ではなく、合否が出る完了条件を渡す |
 
 ## 振り返り
 
 - pstack の「確かめる」「context を守る」「仕組みにする」は、A3・A2・A6 と同じ考えです。違う2つ（計画しない・人を待たない）は、取り消せない操作の前で止まる守り（A6）があってこそ安全に使えます
-- D02 では、同じ考え方を Grok Bot で回します
+- 次のトラック C では、pstack も公式の流れも同じように動く環境（複数のエージェント・手元とクラウド）を整えます。そのあと D02 で、同じ考え方を Grok Bot で回します

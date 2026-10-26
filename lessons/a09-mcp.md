@@ -53,7 +53,7 @@ Model Context Protocol（MCP）は、Claude Code が組み込みの道具の外�
 
 - `.mcp.json` はリポジトリに入れて共有します。clone した人が Claude Code を起動すると、サーバーを承認するかを聞かれます。clone しただけのリポジトリが、手元でプロセスを勝手に起動できないようにするためです [V]
 - 一度断った承認をやり直すときは `claude mcp reset-project-choices` を使います [V]
-- cloud session は、リポジトリの `.mcp.json` を読みます [V]。Grok Build も `.mcp.json` を読むので、1つのファイルで複数のエージェントに同じサーバーを渡せます（調査メモ C2）
+- cloud session は、リポジトリの `.mcp.json` を読みます（リポジトリ1つのセッションの場合。Claude の Projects のスレッドは claude.ai のコネクタを使う）[V]。Grok Build も `.mcp.json` を読むので、1つのファイルで複数のエージェントに同じサーバーを渡せます（調査メモ C2）
 
 ### 管理のコマンド
 
@@ -78,7 +78,7 @@ MCP のツールにも、A6 と同じ allow / deny のルールを書けます [
 
 ### context と出力の量
 
-- つないだサーバーのツール名と説明は、毎回のセッションの context に載ります。使わなくなったサーバーは外します [V]（mcp-quickstart）
+- つないだサーバーのツール名とサーバーの説明（instructions）は、毎回のセッションの context に載ります。使わなくなったサーバーは外します [V]（mcp-quickstart）
 - tool search が既定で、Claude はサーバーのツールを検索してから呼び出します [V]（mcp）
 - ツールの出力が1万トークンを超えると警告が出て、既定では2万5千トークンで打ち切られます。上限は `MAX_MCP_OUTPUT_TOKENS` で変えられます [V]
 

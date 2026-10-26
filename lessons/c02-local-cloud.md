@@ -70,7 +70,7 @@ C1 でリポジトリの指示をまとめました。この章では、その�
 
 ### クラウドに届くもの・届かないもの
 
-cloud session はリポジトリを新しく clone して始まります。リポジトリに入れたものは届き、自分の PC にしか無いものは届きません [V]（cloud-environments）。
+cloud session はリポジトリを新しく clone して始まります。リポジトリに入れたものは届き、自分の PC にしか無いものは届きません [V]（cloud-environments）。hooks・権限・`.mcp.json` が届くのは、リポジトリ1つのセッションの場合です。Claude の Projects のスレッドでは、リポジトリの hooks は動かず、MCP は claude.ai のコネクタを使います [V]。
 
 | 届く | 届かない |
 |---|---|
@@ -91,7 +91,7 @@ A4・A9 で「リポジトリに入れる」と書いたものは、この表の
 | どこで動くか | クラウドだけ | 手元とクラウドの両方 |
 | 向いているもの | 入っていない道具や言語を入れる | `npm install` のような、プロジェクトの準備 |
 
-setup script は5分ほどで終わるように書くと、その結果がキャッシュされます。秘密の値は環境変数ではなく、network secrets に入れます [V]。
+setup script は5分ほどで終わるように書くと、その結果がキャッシュされます。環境の環境変数と setup script は、その環境を使う全員が読めるので、秘密の値は入れません。Anthropic が用意する環境では、API キーを network secrets に入れると、プロキシが指定した宛先への通信にだけ付けてくれます [V]。
 
 ### Remote Control と teleport
 
@@ -154,10 +154,10 @@ chmod +x scripts/install_pkgs.sh
 ]
 ```
 
-A8 で足した SessionStart hook がすでにあるなら、同じ配列に並べます。
+A8 で足した SessionStart hook がすでにあるなら、同じ配列に並べます。A8 の例でクラウドのときに `npm ci` を実行しているなら、install_pkgs.sh と重なるので、どちらか一方にします。
 
 <!-- exercise id="c02-hook" check="manual" -->
-SessionStart hook に install_pkgs.sh を登録し、手元で起動しても何も入らないことを確かめる。あわせて `claude --remote-control` で起動し、スマホかブラウザ（claude.ai/code）からそのセッションに1つ指示を送る。終えたら `npm run done -- c02-hook` で完了にする。
+SessionStart hook に install_pkgs.sh を登録し、手元で起動しても何も入らないことを確かめる。あわせて `claude --remote-control` で起動し、スマホかブラウザ（claude.ai/code）からそのセッションに1つ指示を送る。Remote Control は Pro・Max・Team・Enterprise のプランで claude.ai にログインしているときだけ使え、API キーでは使えない（Team・Enterprise は管理者が有効にする必要がある）[V]。使えない場合は Remote Control の部分は飛ばしてよい。終えたら `npm run done -- c02-hook` で完了にする。
 <!-- /exercise -->
 
 ## うまくいかないとき
