@@ -24,7 +24,7 @@ npm run done -- <課題ID>   # 手動の課題を完了にする
 | 0 はじめに（00 使い方・01 全体像のスライド） | 済 |
 | A Claude Code 単体（A1〜A9） | 済 |
 | B pstack（B1 公式推奨との比較） | 済 |
-| C 環境（複数エージェント・ローカルとクラウド） | 予定 |
+| C 環境（C1 複数エージェント・C2 ローカルとクラウド） | 済 |
 | D Grok（Grok Build・Grok Bot） | D02 Grok Bot の環境は済。D01 Grok Build は予定。続きの D03〜 は [docs/prompts/grok-bot-lessons.md](docs/prompts/grok-bot-lessons.md) で Grok Bot に書かせる |
 | E LLM アプリ / F プロンプト | 予定 |
 
