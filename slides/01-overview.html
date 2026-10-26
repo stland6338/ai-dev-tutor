@@ -165,7 +165,7 @@ svg a { cursor: pointer; }
 </svg>
 
 <!-- 1 表紙 -->
-<section class="slide cover" aria-label="1 / 16 表紙">
+<section class="slide cover" aria-label="1 / 20 表紙">
   <p class="asof">2026-10-25 時点 · Claude Code 2.1.310 / Opus 5.5 · Grok Bot（2026-10 時点）</p>
   <p class="kicker">ai-dev-tutor · 全体像</p>
   <h1 class="say">目標と確かめ方を渡せば、<br><em>エージェントが開発を進める。</em></h1>
@@ -189,14 +189,14 @@ svg a { cursor: pointer; }
     </svg>
   </div>
   <aside class="notes">
-    <p>A1〜A8 と D02 を全部取り入れると、目標と確かめ方を渡すだけで、エージェントが計画・実装・検証まで進める。人は承認ボタンではなく、レビューと判断に時間を使える。</p>
+    <p>A1〜A9・B1・C1・C2・D02 を全部取り入れると、目標と確かめ方を渡すだけで、エージェントが計画・実装・検証まで進める。人は承認ボタンではなく、レビューと判断に時間を使える。</p>
     <p>4つの柱: 目標を渡す／自分で確かめさせる／仕組みで守る／並べて任せる。</p>
   </aside>
   <nav class="chapters" aria-label="関連する章"><span>関連する章</span><a href="../#/00-intro" target="_top">この教材の使い方</a></nav>
 </section>
 
 <!-- 2 実績 -->
-<section class="slide" aria-label="2 / 16 実績">
+<section class="slide" aria-label="2 / 20 実績">
   <p class="kicker">いま起きていること</p>
   <h2 class="say">Claude Code のコードは、<br><em>約9割</em>を Claude が書いている。</h2>
   <div class="fig" role="img" aria-label="円グラフ: Claude が書いたコードが約90%">
@@ -216,7 +216,7 @@ svg a { cursor: pointer; }
 </section>
 
 <!-- 3 見張る → 任せる -->
-<section class="slide" aria-label="3 / 16 見張る開発から任せる開発へ">
+<section class="slide" aria-label="3 / 20 見張る開発から任せる開発へ">
   <p class="kicker">今とこれから</p>
   <h2 class="say">見張る開発から、<em>任せる開発</em>へ。</h2>
   <div class="fig" role="img" aria-label="左: 人が承認の確認に何度も答える。右: 人は目標を渡し、エージェントが動く">
@@ -250,7 +250,7 @@ svg a { cursor: pointer; }
 </section>
 
 <!-- 4 3つの層 -->
-<section class="slide" aria-label="4 / 16 全体の地図">
+<section class="slide" aria-label="4 / 20 全体の地図">
   <p class="kicker">全体の地図</p>
   <h2 class="say">任せる構成は、<em>3つの層</em>でできている。</h2>
   <div class="fig" role="img" aria-label="下から 土台（A1・A2・A4）、任せる仕組み（A3・A5・A6）、広げる（A7・A8・D02）の3層">
@@ -286,7 +286,7 @@ svg a { cursor: pointer; }
 </section>
 
 <!-- 5 完了条件 -->
-<section class="slide" aria-label="5 / 16 完了条件を渡す">
+<section class="slide" aria-label="5 / 20 完了条件を渡す">
   <p class="kicker">任せられる</p>
   <h2 class="say">時間ではなく、<em>完了条件</em>を渡す。</h2>
   <div class="fig" role="img" aria-label="終わりの状態・確かめ方・変えないもの・回数の上限の4つを合わせて /goal の完了条件にする">
@@ -321,7 +321,7 @@ svg a { cursor: pointer; }
 </section>
 
 <!-- 6 ループ -->
-<section class="slide" aria-label="6 / 16 満たすまで続ける">
+<section class="slide" aria-label="6 / 20 満たすまで続ける">
   <p class="kicker">任せられる</p>
   <h2 class="say">条件を満たすまで、<em>エージェントに続けさせる</em>。</h2>
   <div class="fig" role="img" aria-label="作業して判定し、未達なら作業に戻り、達成したら完了するループ">
@@ -351,7 +351,7 @@ svg a { cursor: pointer; }
 </section>
 
 <!-- 7 確かめ方がいちばん効く -->
-<section class="slide" aria-label="7 / 16 確かめ方を渡す">
+<section class="slide" aria-label="7 / 20 確かめ方を渡す">
   <p class="kicker">自分で確かめる</p>
   <h2 class="say">いちばん効くのは、<em>確かめる手段</em>を渡すこと。</h2>
   <div class="fig" role="img" aria-label="棒グラフ: 確かめる手段があると結果は2〜3倍">
@@ -373,7 +373,7 @@ svg a { cursor: pointer; }
 </section>
 
 <!-- 8 はしご -->
-<section class="slide" aria-label="8 / 16 仕組みで確かめる">
+<section class="slide" aria-label="8 / 20 仕組みで確かめる">
   <p class="kicker">自分で確かめる</p>
   <h2 class="say">注意に頼らず、<em>仕組みで</em>確かめさせる。</h2>
   <div class="fig" role="img" aria-label="確かめ方の強さ: プロンプト、/goal、Stop hook、別の目（検証 subagent・/code-review）の順に強くなる">
@@ -403,7 +403,7 @@ svg a { cursor: pointer; }
 </section>
 
 <!-- 9 auto mode -->
-<section class="slide" aria-label="9 / 16 auto mode">
+<section class="slide" aria-label="9 / 20 auto mode">
   <p class="kicker">安全に任せる</p>
   <h2 class="say">auto mode は、<em>危険な操作だけ</em>を止める。</h2>
   <div class="fig" role="img" aria-label="エージェントの操作が審査を通り、ふつうの操作は通過し、危険な操作だけが止まる">
@@ -438,7 +438,7 @@ svg a { cursor: pointer; }
 </section>
 
 <!-- 10 壁 -->
-<section class="slide" aria-label="10 / 16 仕組みで止める">
+<section class="slide" aria-label="10 / 20 仕組みで止める">
   <p class="kicker">安全に任せる</p>
   <h2 class="say">止めたい操作は、<em>仕組みを重ねて</em>止める。</h2>
   <div class="fig" role="img" aria-label="git push の操作が、注意だけの CLAUDE.md は素通りし、deny ルールで止まる。その奥に hook と sandbox がある">
@@ -470,7 +470,7 @@ svg a { cursor: pointer; }
 </section>
 
 <!-- 11 1つ → 並べる -->
-<section class="slide" aria-label="11 / 16 信頼してから並べる">
+<section class="slide" aria-label="11 / 20 信頼してから並べる">
   <p class="kicker">並べて任せる</p>
   <h2 class="say">1つを信頼できてから、<em>並べて</em>任せる。</h2>
   <div class="fig" role="img" aria-label="確かめられた1つのセッションから、複数のセッションに枝分かれする">
@@ -499,7 +499,7 @@ svg a { cursor: pointer; }
 </section>
 
 <!-- 12 手元・クラウド・時刻 -->
-<section class="slide" aria-label="12 / 16 並列とクラウド">
+<section class="slide" aria-label="12 / 20 並列とクラウド">
   <p class="kicker">並べて任せる</p>
   <h2 class="say">手元で並べ、クラウドに渡し、<em>時刻で動かす</em>。</h2>
   <div class="fig" role="img" aria-label="worktree で手元に並べる、cloud sessions に渡す、scheduled tasks で時刻に動かす">
@@ -526,8 +526,116 @@ svg a { cursor: pointer; }
   <nav class="chapters" aria-label="関連する章"><span>関連する章</span><a href="../#/a07-parallel" target="_top">A7 並列に動かす</a><a href="../#/a08-cloud" target="_top">A8 クラウドで動かす</a></nav>
 </section>
 
-<!-- 13 Grok Bot + pstack -->
-<section class="slide" aria-label="13 / 16 Grok Bot と pstack">
+<!-- 13 MCP -->
+<section class="slide" aria-label="13 / 20 MCP">
+  <p class="kicker">道具を足す</p>
+  <h2 class="say">外部のツールは、<em>必要なものだけ</em> MCP でつなぐ。</h2>
+  <div class="fig" role="img" aria-label="エージェントが .mcp.json を通して、必要な外部ツールだけにつながる。つながりすぎると context と危険が増える">
+    <svg viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <use href="#bot" class="c-acc" x="60" y="110" width="200" height="200"/>
+      <rect x="360" y="150" width="240" height="120" rx="24" class="f-code"/><text x="480" y="216" class="lg mono">.mcp.json</text>
+      <path class="ln s-acc" d="M270 210 H350" marker-end="url(#ar)"/>
+      <path class="ln s-ok" d="M610 180 C700 180 700 90 790 90" marker-end="url(#arg)"/>
+      <path class="ln s-ok" d="M610 240 C700 240 700 330 790 330" marker-end="url(#arg)"/>
+      <rect x="800" y="40" width="340" height="100" rx="24" class="panel"/><text x="970" y="96" class="tg">docs の検索</text>
+      <rect x="800" y="280" width="340" height="100" rx="24" class="panel"/><text x="970" y="336" class="tg">ブラウザの操作</text>
+      <text x="480" y="330" class="sm mu">増やすほど context と危険も増える</text>
+    </svg>
+  </div>
+  <aside class="notes">
+    <ul>
+      <li><code>claude mcp add --transport http claude-code-docs https://code.claude.com/docs/mcp</code> のように足す。スコープは local（既定）・project（<code>.mcp.json</code>）・user。</li>
+      <li><code>.mcp.json</code> はリポジトリに入れて共有し、clone した人は最初に承認する。cloud session と Grok Build も読む。</li>
+      <li>権限ルールは <code>mcp__&lt;server&gt;__*</code>。外部の内容を取ってくるサーバーは、プロンプトインジェクションの入り口になる。</li>
+    </ul>
+  </aside>
+  <nav class="chapters" aria-label="関連する章"><span>関連する章</span><a href="../#/a09-mcp" target="_top">A9 MCP</a><a href="../#/a10-security" target="_top">A10 セキュリティ</a></nav>
+</section>
+
+<!-- 14 pstack -->
+<section class="slide" aria-label="14 / 20 pstack">
+  <p class="kicker">流儀を比べる</p>
+  <h2 class="say">pstack は、公式と<em>同じ土台</em>に流儀を足す。</h2>
+  <div class="fig" role="img" aria-label="公式と pstack は、確かめる・context を守る・仕組みにする、で重なり、計画しない・人を待たない、が pstack の流儀">
+    <svg viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <rect x="40" y="40" width="620" height="340" rx="36" class="f-acc-s"/>
+      <rect x="540" y="40" width="620" height="340" rx="36" class="panel" style="opacity:.92"/>
+      <text x="240" y="92" class="lg ta">公式</text>
+      <text x="960" y="92" class="lg">pstack</text>
+      <text x="600" y="170" class="tg">確かめる</text>
+      <text x="600" y="230" class="tg">context を守る</text>
+      <text x="600" y="290" class="tg">仕組みにする</text>
+      <text x="240" y="230" class="sm mu">計画してから作る</text>
+      <text x="960" y="200" class="sm mu">計画しない</text>
+      <text x="960" y="260" class="sm mu">人を待たない</text>
+    </svg>
+  </div>
+  <aside class="notes">
+    <ul>
+      <li>同じ点: prove-it-works（A3）、guard-the-context-window（A2・A5）、encode-lessons-in-structure（A6）、少なく書く。</li>
+      <li>違う点: 「最良の仕様はコード」で計画しない、never-block-on-the-human、Cursor 前提、実装は Grok・判断は Opus 5.5 にモデルを分ける。</li>
+      <li>Claude Code では <code>/plugin marketplace add cursor/plugins</code> と <code>/plugin install pstack@cursor-plugins</code>。第三者のマーケットプレイスは自動更新されないので、オンにする。</li>
+    </ul>
+  </aside>
+  <nav class="chapters" aria-label="関連する章"><span>関連する章</span><a href="../#/b01-pstack" target="_top">B1 pstack</a></nav>
+</section>
+
+<!-- 15 AGENTS.md -->
+<section class="slide" aria-label="15 / 20 1つのリポジトリを複数のエージェントで">
+  <p class="kicker">環境を整える</p>
+  <h2 class="say">共通の指示は、<em>AGENTS.md に1つ</em>だけ。</h2>
+  <div class="fig" role="img" aria-label="AGENTS.md を Claude Code は CLAUDE.md の @AGENTS.md から、Grok Build は直接読む">
+    <svg viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <use href="#doc" class="c-acc" x="500" y="40" width="200" height="200"/>
+      <text x="600" y="280" class="lg ta">AGENTS.md</text>
+      <rect x="60" y="300" width="300" height="90" rx="22" class="f-code"/><text x="210" y="352" class="sm mono">CLAUDE.md: @AGENTS.md</text>
+      <path class="ln s-acc" d="M360 330 C430 330 450 160 490 150" marker-end="url(#ar)"/>
+      <use href="#bot" class="c-blue" x="120" y="60" width="160" height="160"/>
+      <text x="200" y="250" class="tb">Claude Code</text>
+      <use href="#bot" class="c-ok" x="920" y="60" width="160" height="160"/>
+      <text x="1000" y="250" class="tg">Grok Build</text>
+      <path class="ln s-ok" d="M910 140 H712" marker-end="url(#arg)"/>
+    </svg>
+  </div>
+  <aside class="notes">
+    <ul>
+      <li>Claude Code は、CLAUDE.md（CLAUDE.local.md を含む）が無いときだけ AGENTS.md を読む。CLAUDE.md があるなら <code>@AGENTS.md</code> で読み込み、その下に Claude Code だけの指示を書く。</li>
+      <li>Grok Build は AGENTS.md・CLAUDE.md・<code>.claude/rules</code>・<code>.mcp.json</code>・<code>.claude/settings.json</code> の hooks を読む。</li>
+      <li>同じことを2か所に書かない。片方だけ直されて食い違う。</li>
+    </ul>
+  </aside>
+  <nav class="chapters" aria-label="関連する章"><span>関連する章</span><a href="../#/c01-shared-repo" target="_top">C1 1つのリポジトリを複数のエージェントで</a></nav>
+</section>
+
+<!-- 16 手元とクラウド -->
+<section class="slide" aria-label="16 / 20 ローカルとクラウド">
+  <p class="kicker">環境を整える</p>
+  <h2 class="say">クラウドに届くのは、<em>リポジトリに入れたもの</em>だけ。</h2>
+  <div class="fig" role="img" aria-label="手元の ~/.claude はクラウドに届かず、リポジトリの CLAUDE.md・settings.json・.mcp.json・skills は届く">
+    <svg viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <rect x="20" y="20" width="460" height="380" rx="28" class="panel"/>
+      <use href="#laptop" class="c-blue" x="140" y="40" width="220" height="176"/>
+      <rect x="60" y="240" width="380" height="60" rx="18" class="f-code"/><text x="250" y="276" class="sm mono">リポジトリ（.claude/・.mcp.json）</text>
+      <rect x="60" y="320" width="380" height="60" rx="18" class="f-bg"/><text x="250" y="356" class="sm mu">~/.claude・プラグイン</text>
+      <use href="#cloud" class="c-acc" x="760" y="80" width="300" height="210"/>
+      <text x="910" y="340" class="lg ta">cloud session</text>
+      <path class="ln s-ok" d="M450 270 C600 270 620 200 750 190" marker-end="url(#arg)"/>
+      <path class="ln s-red dash" d="M450 350 H640"/>
+      <use href="#cross" class="c-red" x="650" y="322" width="56" height="56"/>
+    </svg>
+  </div>
+  <aside class="notes">
+    <ul>
+      <li>届く: リポジトリの CLAUDE.md・rules・<code>.claude/settings.json</code> の hooks と権限・<code>.mcp.json</code>・skills（リポジトリ1つのセッションの場合）。</li>
+      <li>届かない: <code>~/.claude/</code> 配下、プラグイン、local・user スコープの MCP。</li>
+      <li>依存のインストールは、クラウドだけなら setup script、両方なら SessionStart hook に <code>CLAUDE_CODE_REMOTE</code> を見るスクリプトを。隔離は sandboxed Bash・sandbox runtime・dev container・VM・cloud から選ぶ。</li>
+    </ul>
+  </aside>
+  <nav class="chapters" aria-label="関連する章"><span>関連する章</span><a href="../#/c02-local-cloud" target="_top">C2 ローカルとクラウド</a><a href="../#/a08-cloud" target="_top">A8 クラウドで動かす</a></nav>
+</section>
+
+<!-- 17 Grok Bot + pstack -->
+<section class="slide" aria-label="17 / 20 Grok Bot と pstack">
   <p class="kicker">Grok Bot ＋ pstack</p>
   <h2 class="say">Grok Bot と pstack でも、<em>同じ考え方</em>を回す。</h2>
   <div class="fig" role="img" aria-label="Claude Code と Grok Bot・pstack が、完了条件・確かめる・定時・並べるという同じ考え方を共有する">
@@ -559,8 +667,8 @@ svg a { cursor: pointer; }
   <nav class="chapters" aria-label="関連する章"><span>関連する章</span><a href="../#/d02-grok-bot" target="_top">D02 Grok Bot の環境を整える</a></nav>
 </section>
 
-<!-- 14 人の時間 -->
-<section class="slide" aria-label="14 / 16 人の時間">
+<!-- 18 人の時間 -->
+<section class="slide" aria-label="18 / 20 人の時間">
   <p class="kicker">人の役割</p>
   <h2 class="say">人の時間は、承認から<em>レビューと判断</em>へ。</h2>
   <div class="fig" role="img" aria-label="積み上げ棒グラフ: 今は承認が大半、これからはレビューと判断が大半">
@@ -587,8 +695,8 @@ svg a { cursor: pointer; }
   <nav class="chapters" aria-label="関連する章"><span>関連する章</span><a href="../#/a07-parallel" target="_top">A7 並列に動かす</a></nav>
 </section>
 
-<!-- 15 1日の流れ -->
-<section class="slide" aria-label="15 / 16 1日の流れの例">
+<!-- 19 1日の流れ -->
+<section class="slide" aria-label="19 / 20 1日の流れの例">
   <p class="kicker">1日の流れの例</p>
   <h2 class="say">朝に渡し、昼に見て、<em>夜は直させる</em>。</h2>
   <div class="fig" role="img" aria-label="朝に目標を渡し、昼にレビューし、夜は自動で直させる、という1日の流れ（一例）">
@@ -617,8 +725,8 @@ svg a { cursor: pointer; }
   <nav class="chapters" aria-label="関連する章"><span>関連する章</span><a href="../#/a02-workflow" target="_top">A2</a><a href="../#/a03-verify" target="_top">A3</a><a href="../#/a07-parallel" target="_top">A7</a><a href="../#/a08-cloud" target="_top">A8</a><a href="../#/d02-grok-bot" target="_top">D02</a></nav>
 </section>
 
-<!-- 16 はじめの一歩 -->
-<section class="slide" aria-label="16 / 16 まとめ">
+<!-- 20 はじめの一歩 -->
+<section class="slide" aria-label="20 / 20 まとめ">
   <p class="kicker">まとめ</p>
   <h2 class="say">まずは、<em>確かめ方を渡す</em>ことから。</h2>
   <div class="fig" role="img" aria-label="3段の階段: 1 確かめる、2 守る、3 広げる。1段目に「ここから」の旗">
