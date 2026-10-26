@@ -243,7 +243,7 @@ svg a { cursor: pointer; }
   <aside class="notes">
     <ul>
       <li>今: 編集やコマンドのたびに確認が出る（Manual）。報告を人が後から確かめる。「push しないで」と会話で頼んでも compact で消えると効かない。1つのセッションに人が付きっきり。</li>
-      <li>これから: auto mode が操作を審査し危険なものだけ止める。<code>/goal</code> と Stop hook でテストが通るまで終われない。deny ルール・hook・sandbox で禁止を仕組みに。worktree・クラウドで並べ、人はレビューと判断をする。</li>
+      <li>これから: auto mode が操作を審査し危険なものだけ止める。<code>/goal</code> でテストが通るまで続けさせ、Stop hook で一度差し戻す。deny ルール・hook・sandbox で禁止を仕組みに。worktree・クラウドで並べ、人はレビューと判断をする。</li>
     </ul>
   </aside>
   <nav class="chapters" aria-label="関連する章"><span>関連する章</span><a href="../#/a03-verify" target="_top">A3 確かめ方を渡す</a><a href="../#/a06-guardrails" target="_top">A6 守る</a><a href="../#/a07-parallel" target="_top">A7 並列</a></nav>
@@ -323,7 +323,7 @@ svg a { cursor: pointer; }
 <!-- 6 ループ -->
 <section class="slide" aria-label="6 / 16 満たすまで続ける">
   <p class="kicker">任せられる</p>
-  <h2 class="say">条件を満たすまで、<em>エージェントは終われない</em>。</h2>
+  <h2 class="say">条件を満たすまで、<em>エージェントに続けさせる</em>。</h2>
   <div class="fig" role="img" aria-label="作業して判定し、未達なら作業に戻り、達成したら完了するループ">
     <svg viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
       <rect x="40" y="130" width="280" height="130" rx="24" class="f-acc-s"/>
@@ -440,7 +440,7 @@ svg a { cursor: pointer; }
 <!-- 10 壁 -->
 <section class="slide" aria-label="10 / 16 仕組みで止める">
   <p class="kicker">安全に任せる</p>
-  <h2 class="say">止めたい操作は、<em>仕組みで必ず</em>止める。</h2>
+  <h2 class="say">止めたい操作は、<em>仕組みを重ねて</em>止める。</h2>
   <div class="fig" role="img" aria-label="git push の操作が、注意だけの CLAUDE.md は素通りし、deny ルールで止まる。その奥に hook と sandbox がある">
     <svg viewBox="0 0 1200 430" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
       <use href="#bot" class="c-acc" x="10" y="120" width="140" height="140"/>
@@ -461,7 +461,7 @@ svg a { cursor: pointer; }
     <ul>
       <li>CLAUDE.md: Claude の注意に頼る。破っても大きな害がないことに使う。</li>
       <li>deny ルール: どのモードでも効く。allow より優先。例 <code>"deny": ["Bash(git push *)"]</code></li>
-      <li>PreToolUse hook: スクリプトが直前に走り、終了コード 2 で理由付きで止める。</li>
+      <li>PreToolUse hook: スクリプトが直前に走り、終了コード 2 で理由付きで止める。書き方によってはすり抜けるので、1つに頼らない。</li>
       <li>sandbox: 書き込める場所と通信先を OS レベルで制限し、被害の範囲を絞る。</li>
       <li>既定が auto でも、deny ルール・hooks・sandbox を重ねる考え方は変わらない。</li>
     </ul>
@@ -636,7 +636,7 @@ svg a { cursor: pointer; }
   </div>
   <aside class="notes">
     <ol>
-      <li>確かめ方を渡す: テストの実行方法を CLAUDE.md に書き、Stop hook と <code>/goal</code> で「通るまで終われない」にする（A3・A4）。</li>
+      <li>確かめ方を渡す: テストの実行方法を CLAUDE.md に書き、<code>/goal</code> で「通るまで続ける」ようにし、Stop hook で一度差し戻す（A3・A4）。</li>
       <li>守りを仕組みにする: auto mode で確認の手間を減らし、deny ルール・PreToolUse hook・sandbox を重ねる（A6）。</li>
       <li>任せる範囲を広げる: 1つのセッションを信頼できてから、worktree・cloud sessions・scheduled tasks・Grok Bot のルーティンへ広げる（A7・A8・D02）。</li>
     </ol>
