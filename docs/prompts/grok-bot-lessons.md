@@ -4,9 +4,10 @@
 出力形式は [docs/lesson-format.md](../lesson-format.md) に合わせてある。形式を変えたらここも直す。
 
 受け取った章は、次の手順で取り込む。
-1. `lessons/` に置き、`command` 課題の `run` の中身を読んで確かめる
-2. `starter/` と `solutions/` に、課題に合わせたファイルを足す
-3. `npm test` と `npm run self-test` を通す
+1. Grok Bot がリポジトリに書ける場合は、ブランチと PR で受け取る。`git diff main...<ブランチ>` で、決めた範囲の外のファイルを触っていないかを確かめる（2026-10-26 に、main へ直接 push されてデプロイまで進んだことがある）
+2. `command` 課題の `run` の中身を読んで確かめる
+3. ファイルで受け取った場合は、`lessons/` に置き、`starter/` と `solutions/` に課題に合わせたファイルを足す
+4. `npm test` と `npm run self-test` を通してから main に入れ、デプロイは自分で行う
 
 セットアップの章は `lessons/d02-grok-bot.md` として手で書いた（2026-10-26）。このプロンプトで頼むのは、その続きの d03・d04 の2章。`d01` は Grok Build の章のために空けてある。
 
@@ -31,6 +32,24 @@
 
 章の分け方は内容に合わせて変えてよい（最大2章）。
 
+既にある章と重なる内容は、書き直さずに章へのリンク（例: `[C1](#/c01-shared-repo)`）で済ませ、Grok Bot に固有の点だけを書く。
+
+| 章 | 扱っていること |
+|---|---|
+| `d02-grok-bot` | Grok Bot のプラン・Bot の作り方・スキル・ルーティン・Connect apps |
+| `c01-shared-repo` | AGENTS.md を共通の指示にし、CLAUDE.md から `@AGENTS.md` で読む構成 |
+| `c02-local-cloud` | クラウドのセッションに届く設定と届かない設定、setup script、secrets |
+| `a10-security` | 外から来た指示（プロンプトインジェクション）の扱い、権限の見直し |
+| `b01-pstack` | pstack と公式の推奨の比較 |
+
+## 作業のしかた
+- リポジトリに書ける場合
+  - `grok/d03-d04` のようなブランチを切り、PR で出す。main に直接 push しない
+  - `npm run deploy` や `wrangler` を実行しない。デプロイは持ち主が行う
+  - 触ってよいのは、新しい章の `lessons/d03-*.md`・`lessons/d04-*.md` と、その課題のための `starter/`・`solutions/` のファイルだけ。ほかの章や設定を直したほうがよいと思ったら、PR の説明に提案として書く
+  - PR を出す前に `npm test` と `npm run self-test` を実行し、結果を PR の説明に書く
+- リポジトリに書けない場合は、下の「出力形式」のとおりファイルの中身を返す
+
 ## 守ること
 - 根拠にするのは、公式資料（docs.x.ai/grok-bot/*、x.ai/news、xAI と Cursor の公式ドキュメント）と、あなた自身の実行結果だけにする
 - 文ごとに、確認の度合いを次の印で示す
@@ -38,7 +57,7 @@
   - `[R]` あなたが自分のクラウドコンピュータで実際に動かして確認した
   - `[U]` 未確認・推測
 - 公式資料に書かれていないこと（例: GitHub のリポジトリ権限の詳細、Team Setup Scripts の書式）は、「公式資料に記載なし（YYYY-MM-DD 時点）」と書く。推測で埋めない
-- 後で推奨が変わったときに「この時点ではこうだった」と読めるように、バージョンと日付を必ず残す。各章の frontmatter の `as_of` に確認日を、`applies_to` に Grok Bot アプリのバージョン（わからなければ "beta"）を書く
+- 後で推奨が変わったときに「この時点ではこうだった」と読めるように、バージョンと日付を必ず残す。各章の frontmatter の `as_of` に確認日を、`applies_to` に Grok Bot アプリのバージョン（わからなければ "beta"）を書く。書いた後で直したときは `revised` に直した日と理由を書く
 - 公式の告知: xAI の公式アカウントや関係者の X 投稿で、使い方や推奨の手順に触れたものを各章に1〜3件載せる。載せるのは「投稿者・日付・URL・1行の要約」だけで、本文は引用しない。原文を直接開いて確かめたものは `verified: true`、まとめ記事などで知っただけなら `verified: false`
 - 推奨の移り変わりを frontmatter の `history` に残す（バージョンまたは日付・その時点の推奨・`current` / `superseded` / `experimental`）
 - API キー・トークン・メールアドレスなどの値は書かない。必要な箇所は `<YOUR_XAI_API_KEY>` のような置き換え用の文字列にする
@@ -49,12 +68,12 @@
 編集を伴う課題は次の exercise ブロックで書く。
 
 ```markdown
-<!-- exercise id="d03-agents-md" check="file-contains" path="sample-app/AGENTS.md" pattern="^## Test" -->
-**課題**: AGENTS.md にテストの実行方法を書く。見出しは `## Test` にする。
+<!-- exercise id="d03-agents-md" check="file-contains" path="sample-app/AGENTS.md" pattern="^## Grok Bot" -->
+**課題**: AGENTS.md に `## Grok Bot` の節を作り、Grok Bot に任せるときだけの決まりを書く。
 <!-- /exercise -->
 ```
 
-- 読み手の手元には演習用の workspace がある。中身は `sample-app/`（依存パッケージのない Node の CLI「tasklog」。`npm test` でテスト、git リポジトリ）と `notes/`（ワークシート）。`path` は workspace から見た相対パスで書く
+- 読み手の手元には演習用の workspace がある。中身は `sample-app/`（依存パッケージのない Node の CLI「tasklog」。`npm test` でテスト、git リポジトリ）と `notes/`（ワークシート）。`path` は workspace から見た相対パスで書く。C1 を終えた読み手の `sample-app/` には AGENTS.md と、`@AGENTS.md` を読む CLAUDE.md がある
 - `check` に使える値
   - `file-exists`: `path` のファイルがあれば合格
   - `file-contains`: `path` のファイルに `pattern`（正規表現）に合う箇所があれば合格
@@ -65,7 +84,7 @@
 - 課題の `id` は `d03-` のように章の id の先頭3文字で始め、全章で重複させない
 - アプリの操作のように手元のファイルでは判定できない課題は `manual` にし、「何が見えれば完了か」を1文で書く
 - 1章あたり課題は3〜6個
-- 課題ごとに、合格する模範解答（作るファイルの中身）も添える。ファイルで判定する課題は、読み手がまだ手を付けていない状態では不合格になること
+- 課題ごとに、合格する模範解答（作るファイルの中身）も添える。ファイルで判定する課題は、読み手がまだ手を付けていない状態では不合格になること。C1 の模範解答で既に合格してしまう `pattern`（例: AGENTS.md の既存の見出し `## Test`・`## 決まり`）は使わない
 
 ## 出力形式
 章ごとに Markdown ファイル1つ。ファイル名は `lessons/<id>.md`、id は `d03-grok-bot-repo`・`d04-grok-bot-tasks` のように `d03` から順に付ける（`d01` は Grok Build の章、`d02` はセットアップの章で使用済み）。**ファイルの中身だけ**をコードブロックに入れて返す。
@@ -78,12 +97,12 @@ id: d03-grok-bot-repo
 title: リポジトリを Grok Bot 向けに整える
 track: grok
 order: 3
-as_of: 2026-10-24
+as_of: <確認した日 YYYY-MM-DD>
 applies_to: "Grok Bot beta"
 estimated_minutes: 20
 sources:
   - url: https://docs.x.ai/grok-bot/get-started
-    checked: 2026-10-24
+    checked: <確認した日>
 announcements:
   - author: "@xai"
     date: 2026-08-11
