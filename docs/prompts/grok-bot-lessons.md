@@ -8,6 +8,8 @@
 2. `starter/` と `solutions/` に、課題に合わせたファイルを足す
 3. `npm test` と `npm run self-test` を通す
 
+セットアップの章は `lessons/d02-grok-bot.md` として手で書いた（2026-10-26）。このプロンプトで頼むのは、その続きの d03・d04 の2章。`d01` は Grok Build の章のために空けてある。
+
 ---ここから---
 
 # 依頼: 「Grok Bot で開発する準備」教材の章を書く
@@ -21,12 +23,13 @@
 - CLAUDE.md・hooks・skills・MCP は知っている。Grok Bot は触ったことがない
 - 知っていることは説明しない。Claude Code との違いと、Grok Bot に固有の点だけを書く
 
-## 書く内容（3章まで）
-1. Grok Bot とは・セットアップ: 何ができるか、必要なプラン、アプリの導入、サインイン、最初の Bot を作る
-2. リポジトリを Grok Bot 向けに整える: GitHub 連携、Cursor Cloud Agents にコーディングを任せる流れ、AGENTS.md / CLAUDE.md のどちらがどこで読まれるか、セットアップスクリプトや secrets の扱い
-3. 開発タスクを頼む: アプリ・X の @bot・Slack から頼む方法、結果（PR など）の受け取り方と確かめ方
+## 書く内容（2章まで）
+セットアップ（プラン、Bot の作り方、スキル、ルーティン、Connect apps）は既にある章で扱ったので書かない。
 
-章の分け方は内容に合わせて変えてよい（最大3章）。
+1. リポジトリを Grok Bot 向けに整える: GitHub 連携、Cursor Cloud Agents にコーディングを任せる流れ、AGENTS.md / CLAUDE.md のどちらがどこで読まれるか、セットアップスクリプトや secrets の扱い
+2. 開発タスクを頼む: アプリ・X の @bot・Slack から頼む方法、結果（PR など）の受け取り方と確かめ方
+
+章の分け方は内容に合わせて変えてよい（最大2章）。
 
 ## 守ること
 - 根拠にするのは、公式資料（docs.x.ai/grok-bot/*、x.ai/news、xAI と Cursor の公式ドキュメント）と、あなた自身の実行結果だけにする
@@ -46,7 +49,7 @@
 編集を伴う課題は次の exercise ブロックで書く。
 
 ```markdown
-<!-- exercise id="d02-agents-md" check="file-contains" path="sample-app/AGENTS.md" pattern="^## Test" -->
+<!-- exercise id="d03-agents-md" check="file-contains" path="sample-app/AGENTS.md" pattern="^## Test" -->
 **課題**: AGENTS.md にテストの実行方法を書く。見出しは `## Test` にする。
 <!-- /exercise -->
 ```
@@ -59,22 +62,22 @@
   - `command`: `cwd` で `run` をシェルで実行し、終了コード 0 なら合格。読み手の手元で実行されるので、破壊的なコマンドや通信するコマンドは書かない
   - `manual`: 機械では判定できない課題。読み手が自分で完了にする
 - 属性の値に `"` は使えない（必要なら正規表現で `\x22` と書く）
-- 課題の `id` は `d02-` のように章の id の先頭3文字で始め、全章で重複させない
+- 課題の `id` は `d03-` のように章の id の先頭3文字で始め、全章で重複させない
 - アプリの操作のように手元のファイルでは判定できない課題は `manual` にし、「何が見えれば完了か」を1文で書く
 - 1章あたり課題は3〜6個
 - 課題ごとに、合格する模範解答（作るファイルの中身）も添える。ファイルで判定する課題は、読み手がまだ手を付けていない状態では不合格になること
 
 ## 出力形式
-章ごとに Markdown ファイル1つ。ファイル名は `lessons/<id>.md`、id は `d02-grok-bot-setup`・`d03-grok-bot-repo`・`d04-grok-bot-tasks` のように `d02` から順に付ける（`d01` は Grok Build の章で使用済み）。**ファイルの中身だけ**をコードブロックに入れて返す。
+章ごとに Markdown ファイル1つ。ファイル名は `lessons/<id>.md`、id は `d03-grok-bot-repo`・`d04-grok-bot-tasks` のように `d03` から順に付ける（`d01` は Grok Build の章、`d02` はセットアップの章で使用済み）。**ファイルの中身だけ**をコードブロックに入れて返す。
 
 frontmatter は YAML の一部だけを使う。`key: 値`、`key:` の下に `- 値` の列、`- k: v` で始めて続く行を字下げした地図の列、の3つだけ。`{}` や `[]` のインライン表記は使わない。
 
 ```markdown
 ---
-id: d02-grok-bot-setup
-title: Grok Bot をセットアップする
+id: d03-grok-bot-repo
+title: リポジトリを Grok Bot 向けに整える
 track: grok
-order: 2
+order: 3
 as_of: 2026-10-24
 applies_to: "Grok Bot beta"
 estimated_minutes: 20
