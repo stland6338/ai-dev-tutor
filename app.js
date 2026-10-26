@@ -1,5 +1,5 @@
 // 教材ビューア。元データは lessons/*.md と progress.json だけで、ここは読んで表示するだけ
-import { parseLesson } from "./lib/lesson.js";
+import { parseLesson, xPosts } from "./lib/lesson.js";
 
 const TRACKS = {
   intro: "はじめに",
@@ -123,20 +123,6 @@ function renderAside(meta) {
     </details>`;
 }
 
-// X の投稿 URL（announcements と sources から）。status の数字 ID を取り出す
-const X_STATUS = /^https:\/\/(?:www\.|mobile\.)?(?:x|twitter)\.com\/([A-Za-z0-9_]{1,15})\/status\/(\d{5,25})(?:[/?#].*)?$/;
-function xPosts(meta) {
-  const seen = new Set();
-  const out = [];
-  for (const a of [...(meta.announcements ?? []), ...(meta.sources ?? [])]) {
-    const m = X_STATUS.exec(String(a.url ?? ""));
-    if (!m || seen.has(m[2])) continue;
-    seen.add(m[2]);
-    out.push({ id: m[2], url: `https://x.com/${m[1]}/status/${m[2]}`, author: a.author ?? `@${m[1]}`, date: a.date, summary: a.summary });
-  }
-  return out;
-}
-
 function renderXPosts(meta) {
   const posts = xPosts(meta);
   if (!posts.length) return "";
@@ -167,12 +153,17 @@ function bindXToggle() {
   if (!btn) return;
   const body = document.getElementById("x-grid");
   let embedded = false;
+  let pending = false;
   btn.addEventListener("click", () => {
     const open = btn.getAttribute("aria-expanded") !== "true";
     btn.setAttribute("aria-expanded", String(open));
     btn.textContent = open ? "投稿を閉じる" : "投稿を表示";
     body.hidden = !open;
-    if (open && !embedded) { embedded = true; embedXPosts(); }
+    // 埋め込みに成功したときだけ済みにする（失敗やタイムアウトのあとは、開き直すと再試行する）
+    if (open && !embedded && !pending) {
+      pending = true;
+      embedXPosts().then((ok) => { embedded = ok; pending = false; });
+    }
   });
 }
 
@@ -196,24 +187,32 @@ let renderSeq = 0;
 async function embedXPosts() {
   const seq = ++renderSeq;
   const cards = [...document.querySelectorAll(".x-card")];
-  if (!cards.length) return;
+  if (!cards.length) return false;
   let twttr;
   try {
     twttr = await Promise.race([loadWidgets(), new Promise((_, r) => setTimeout(() => r(new Error("timeout")), 8000))]);
   } catch {
-    return; // リンク表示のまま
+    return false; // リンク表示のまま
   }
-  if (seq !== renderSeq) return; // 別の章に移った
+  if (seq !== renderSeq) return false; // 別の章に移った
   const dark = document.documentElement.dataset.theme
     ? document.documentElement.dataset.theme === "dark"
     : matchMedia("(prefers-color-scheme: dark)").matches;
   for (const card of cards) {
     const target = card.querySelector(".x-embed");
+    target.replaceChildren();
+    card.classList.remove("embedded");
     twttr.widgets
       .createTweet(card.dataset.tweetId, target, { lang: "ja", dnt: true, theme: dark ? "dark" : "light", conversation: "none", align: "center" })
       .then((el) => { if (el) card.classList.add("embedded"); })
       .catch(() => {});
   }
+  return true;
+}
+
+// 明暗を切り替えたら、表示済みの投稿を新しいテーマで描き直す（埋め込みはテーマを作るときに決めるため）
+function rethemeXPosts() {
+  if (document.querySelector(".x-card.embedded")) embedXPosts();
 }
 
 function renderHistory(meta) {
@@ -264,6 +263,7 @@ function renderLesson(l) {
     <article class="lesson">
       <div class="asof">
         <strong>${esc(meta.as_of)}</strong> 時点 · <strong>${esc(meta.applies_to)}</strong> の推奨
+        ${meta.revised ? `<span class="ref">改訂: ${esc(meta.revised)}</span>` : ""}
         ${meta.official_ref ? `<span class="ref">公式の対応: ${esc(meta.official_ref)}</span>` : ""}
         ${meta.estimated_minutes ? `<span class="ref">目安 ${esc(meta.estimated_minutes)} 分</span>` : ""}
       </div>
@@ -315,6 +315,7 @@ function initTheme() {
     const next = dark ? "light" : "dark";
     document.documentElement.dataset.theme = next;
     store.set("theme", next);
+    rethemeXPosts();
   });
   $("menu").addEventListener("click", () => {
     const open = document.body.classList.toggle("toc-open");

@@ -4,7 +4,8 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, writeFil
 import { spawnSync } from "node:child_process";
 import { homedir, tmpdir } from "node:os";
 import { dirname, join } from "node:path";
-import { parseAppliesTo, parseExercises, parseFrontmatter, compareVersions, countExerciseTags } from "../lib/lesson.js";
+import { parseAppliesTo, parseExercises, parseFrontmatter, compareVersions, countExerciseTags, xPosts } from "../lib/lesson.js";
+import { deckProblems, slideProblems } from "./site-checks.mjs";
 import { ROOT, evaluate, loadLessons, versionNotes } from "./check.mjs";
 import { MARKER, workspaceProblem } from "./start.mjs";
 
@@ -159,4 +160,36 @@ test("全章の frontmatter に必須項目があり、課題に check がある
       if (ex.pattern) new RegExp(ex.pattern, "m");
     }
   }
+});
+
+test("X の投稿 URL: x.com・twitter.com の status だけを拾い、正規の形に直す", () => {
+  const meta = {
+    announcements: [
+      { url: "https://x.com/bcherny/status/2007179832300581177", author: "@bcherny" },
+      { url: "https://twitter.com/bcherny/status/2007179832300581177?s=20" },
+      { url: "https://x.com.evil.com/a/status/12345678" },
+      { url: "https://x.com/a/status/abc" },
+      { url: "http://x.com/a/status/12345678" },
+      { url: "javascript:alert(1)//x.com/a/status/12345678" },
+    ],
+    sources: [{ url: "https://mobile.twitter.com/poteto/status/2113426421075050909" }],
+  };
+  const posts = xPosts(meta);
+  assert.deepEqual(posts.map((p) => p.url), [
+    "https://x.com/bcherny/status/2007179832300581177",
+    "https://x.com/poteto/status/2113426421075050909",
+  ]);
+});
+
+test("公開前の検査: 属性付きの script と、存在しない deck を落とす", () => {
+  assert.equal(slideProblems("a.html", "<script>ok()</script>").length, 0);
+  assert.equal(slideProblems("a.html", '<script type="module">x()</script><script defer>y()</script>').length, 2);
+  const lessons = [{ file: "01.md", meta: { deck: "slides/01-overview.html" } }, { file: "02.md", meta: { deck: "slides/none.html" } }, { file: "03.md", meta: {} }];
+  assert.deepEqual(deckProblems(lessons, ["01-overview.html"]), ["lessons/02.md: deck の slides/none.html が slides/ に無い"]);
+});
+
+test("教材のスライドと deck が公開前の検査を通る", () => {
+  const slides = readdirSync(join(ROOT, "slides")).filter((f) => f.endsWith(".html"));
+  for (const f of slides) assert.deepEqual(slideProblems(f, readFileSync(join(ROOT, "slides", f), "utf8")), []);
+  assert.deepEqual(deckProblems(loadLessons(), slides), []);
 });

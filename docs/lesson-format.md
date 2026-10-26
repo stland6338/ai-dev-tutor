@@ -13,6 +13,7 @@ title: 確かめ方を渡す
 track: claude-code            # intro | claude-code | pstack | env | grok | llm-app | prompt
 order: 3                      # トラック内の順
 as_of: 2026-10-24             # 内容を確かめた日
+revised: 2026-10-25（公式 docs との照合で修正）   # 任意。直した日と理由。ビューアの帯に出る
 applies_to: Claude Code 2.1.310 / Opus 5.5   # このバージョンの時点の推奨である、という印
 official_ref: Claude Code 101 · Module 3     # 公式講座の対応箇所（無ければ省略）
 estimated_minutes: 25
