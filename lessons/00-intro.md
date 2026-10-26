@@ -29,13 +29,13 @@ Anthropic と xAI が今推奨している、AI エージェントとの開発�
 
 | トラック | 内容 |
 |---|---|
-| A Claude Code 単体 | 公式「Claude Code 101」の順に、基本から並列・クラウドまで |
-| B pstack | 公式推奨と比べて、どこが同じでどこが違うか |
+| A Claude Code 単体 | 公式「Claude Code 101」の順に、基本から並列・クラウド・MCP まで |
+| B pstack | 公式推奨と比べて、どこが同じでどこが違うか（B1） |
 | C 環境 | 1つのリポジトリを複数のエージェントで使う準備、ローカルとクラウドの使い分け |
-| D Grok | Grok Build と Grok Bot |
+| D Grok | Grok Build と Grok Bot（D02 が収録済み） |
 | E・F | LLM アプリの作り方、プロンプトとコンテキストの設計 |
 
-[![学習の全体地図。0 はじめに → A Claude Code 単体（A1〜A8）→ B pstack → C 環境 → D Grok → 次の道具でも開発できる準備。E と F はどこからでも読める応用](../assets/diagrams/roadmap.svg)](../assets/diagrams/roadmap.svg)
+[![学習の全体地図。0 はじめに → A Claude Code 単体（A1〜A9）→ B1 pstack → C 環境 → D Grok（D02 Grok Bot は収録済み）→ 次の道具でも開発できる準備。E と F はどこからでも読める応用](../assets/diagrams/roadmap.svg)](../assets/diagrams/roadmap.svg)
 
 ## 「いつの時点の推奨か」を必ず見る
 
