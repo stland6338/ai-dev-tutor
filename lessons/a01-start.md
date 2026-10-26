@@ -3,8 +3,8 @@ id: a01-start
 title: インストールと最初の依頼
 track: claude-code
 order: 1
-as_of: 2026-10-24
-revised: 2026-10-24（2026-09〜10 の公式発信を反映）
+as_of: 2026-10-26
+revised: 2026-10-26（インストール手順を追加）
 applies_to: Claude Code 2.1.310 / Opus 5.5
 official_ref: Claude Code 101 · Module 1–2（What is Claude Code / Installing）
 estimated_minutes: 20
@@ -13,6 +13,8 @@ sources:
     checked: 2026-10-24
   - url: https://code.claude.com/docs/en/quickstart
     checked: 2026-10-24
+  - url: https://code.claude.com/docs/en/setup
+    checked: 2026-10-26
   - url: https://code.claude.com/docs/en/how-claude-code-works
     checked: 2026-10-24
   - url: https://code.claude.com/docs/en/model-config
@@ -67,6 +69,59 @@ history:
 - 2026-10 時点の推奨モデルの起点は Opus 5.5（`claude-opus-5-5`、既定の effort は medium）です [V]
 - 思考の深さは effort（low / medium / high / xhigh / max）で調整します。`/model` から変えられます。プロンプトに「think hard」と書く方法は古い推奨です（章末の年表を参照）[V]
 - 知らないリポジトリでは、いきなり変更を頼まず、まず質問して読ませるのが公式の最初の一歩です [V]（quickstart・best-practices）
+
+## インストールとログイン
+
+公式の setup ページ（Advanced setup）に書かれている手順です [V]。迷ったら [quickstart](https://code.claude.com/docs/en/quickstart) と [setup](https://code.claude.com/docs/en/setup) を開いてください。
+
+### 動く環境
+
+- OS: macOS 13.0 以上、Windows 10 1809 以上（または Windows Server 2019 以上）、Ubuntu 20.04 以上、Debian 10 以上、Alpine Linux 3.19 以上
+- メモリ 4GB 以上、x64 か ARM64、インターネット接続
+- 公式のインストーラーを使う場合、Node.js は不要です（npm でのインストールは Node.js 22 以上が必要）。この教材の `npm start` や `npm run check` には Node.js 20 以上と git を使います
+
+### インストールする
+
+ターミナルで、使っている OS のコマンドを実行します。公式の推奨は native install で、バックグラウンドで自動更新されます。
+
+```bash
+# macOS / Linux / WSL
+curl -fsSL https://claude.ai/install.sh | bash
+```
+
+```powershell
+# Windows PowerShell（プロンプトが PS C:\ で始まる）
+irm https://claude.ai/install.ps1 | iex
+```
+
+```batch
+REM Windows CMD（プロンプトに PS が付かない）
+curl -fsSL https://claude.ai/install.cmd -o install.cmd && install.cmd && del install.cmd
+```
+
+ほかに Homebrew（`brew install --cask claude-code`）や WinGet（`winget install Anthropic.ClaudeCode`）でも入れられます。この2つは自動更新されないので、自分で upgrade します。
+
+終わったら**新しいターミナルを開いて** `claude --version` を実行し、バージョン番号が出れば成功です。`claude` が見つからないと言われたら、公式の Troubleshoot installation を見てください。`claude doctor` で設定まで含めて診断できます。
+
+### Windows の場合
+
+Windows では、そのまま（ネイティブ）でも WSL の中でも動きます。
+
+| 方法 | 必要なもの | サンドボックス |
+|---|---|---|
+| ネイティブ Windows | なし（Git for Windows は任意） | 使えない |
+| WSL 2 | WSL 2 | 使える |
+| WSL 1 | WSL 1 | 使えない |
+
+- ネイティブでは PowerShell か CMD からインストールします。管理者権限は要りません。Git for Windows を入れると、Claude Code が Bash ツールに Git Bash を使います。入れない場合は PowerShell でコマンドを実行します
+- WSL では、WSL のターミナルの中で Linux 用のコマンドでインストールし、そこで `claude` を起動します
+- この教材の課題はシェルスクリプトや bash 前提の hook を使うので、Windows では WSL 2 をおすすめします
+
+### ログインする
+
+Claude Code を使うには、Pro・Max・Team・Enterprise のいずれかのプラン、または Console（API）のアカウントが必要です。無料の claude.ai プランでは使えません [V]。
+
+`claude` を起動すると、ブラウザでのログインに案内されます。そのまま進めればログインできます。環境変数 `ANTHROPIC_API_KEY` を設定していて、起動時にそのキーを使うことを承認した場合は、ログインを飛ばします。アカウントの種類ごとの詳しい手順は、公式の Authentication のページを見てください。
 
 ## ハンズオン
 

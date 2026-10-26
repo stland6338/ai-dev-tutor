@@ -3,8 +3,8 @@ id: 00-intro
 title: この教材の使い方
 track: intro
 order: 0
-as_of: 2026-10-24
-revised: 2026-10-24（2026-09〜10 の公式発信を反映）
+as_of: 2026-10-26
+revised: 2026-10-26（教材の準備手順を追加）
 applies_to: Claude Code 2.1.310
 estimated_minutes: 10
 sources:
@@ -48,6 +48,19 @@ AI 開発ツールの推奨は数か月で変わります。たとえば 2025 �
 - 章末: 推奨の年表。バージョンごとに何が推奨され、今も有効か（継続・置換・実験）
 
 `npm run check` は、手元の `claude --version` が教材のバージョンより新しいと「推奨が変わっている可能性があります」と知らせます。そのときは帯にある公式ページを開いて、差分を確かめてください。
+
+## 始める前に（教材の準備）
+
+必要なものは git、Node.js 20 以上、python3（ビューアを使う場合）、Claude Code です。Claude Code のインストールとログインは [A1](#/a01-start) にまとめています。
+
+教材のリポジトリを手元に置いて、そのフォルダで作業します。
+
+```bash
+git clone https://github.com/stland6338/ai-dev-tutor.git
+cd ai-dev-tutor
+```
+
+教材の課題を動かすだけなら、追加のパッケージは要りません（依存パッケージなし）。`npm install` が入れるのは公開用の wrangler だけなので、省いて構いません。準備ができたら、下の「1. workspace を作る」の `npm start` に進みます。
 
 ## 進め方
 

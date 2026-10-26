@@ -3,7 +3,7 @@ id: a08-cloud
 title: クラウドで動かす（cloud sessions・GitHub Actions）
 track: claude-code
 order: 8
-as_of: 2026-10-25
+as_of: 2026-10-26
 revised: 2026-10-25（公式 docs との照合で修正）
 applies_to: Claude Code 2.1.310 / Opus 5.5
 official_ref: Claude Code in Action · Automate Repeat Work（Routines and Headless / GitHub Actions）
@@ -17,6 +17,8 @@ sources:
     checked: 2026-10-24
   - url: https://code.claude.com/docs/en/github-actions
     checked: 2026-10-24
+  - url: https://github.com/anthropics/claude-code-action/blob/main/docs/security.md
+    checked: 2026-10-26
   - url: https://claude.dev/blog/claude-code-in-the-cloud/
     checked: 2026-10-24
   - url: https://code.claude.com/docs/en/env-vars
@@ -143,6 +145,14 @@ A3・A6 の設定は残したまま、`sample-app/.claude/settings.json` の `ho
 <!-- exercise id="a08-gha" check="file-contains" path="sample-app/.github/workflows/claude.yml" pattern="anthropics/claude-code-action@v1" -->
 `claude.yml` を用意する。`permissions` の各行が何のためにあるか（`id-token: write` など）を docs で確かめる。
 <!-- /exercise -->
+
+> **誰が Claude を動かせるか**（claude-code-action の docs/security.md より [V]）
+>
+> - 既定では、Claude を起動できるのはリポジトリに書き込み権限のある人だけです。GitHub App や bot も、既定では起動できません
+> - `allowed_non_write_users` は付けないでください。この書き込み権限の確認を飛ばす設定で、公式も「大きなセキュリティリスク」と書いています。権限をごく絞った workflow（ラベル付けだけなど）向けです
+> - `allowed_bots: '*'` も付けないでください。許可した bot は書き込み権限を確認されません。公開リポジトリでは、誰が作った GitHub App でも issue やコメントを書けるので、その App が自分の書いた指示で Claude を動かせてしまいます
+> - 公開リポジトリでは、外部の人が書いた issue やコメントに、隠れた指示（prompt injection）が仕込まれることがあります。action は HTML コメントや不可視文字を取り除きますが、新しい手口は出てきます。外部の人の書いた内容に `@claude` を付ける前に、元の文面を確かめてください
+> - workflow の `permissions` は、必要なものだけにします。この教材の例は `contents: write` などを持つので、使わない権限は外してください
 
 ### 4. クラウドで動かす
 
