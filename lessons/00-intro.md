@@ -31,11 +31,11 @@ Anthropic と xAI が今推奨している、AI エージェントとの開発�
 |---|---|
 | A Claude Code 単体 | 公式「Claude Code 101」の順に、基本から並列・クラウド・MCP まで（A1〜A9）。セキュリティ・セッション・設定の診断・推奨の変化の追い方（A10〜A13） |
 | B pstack | 公式推奨と比べて、どこが同じでどこが違うか（B1） |
-| C 環境 | 1つのリポジトリを複数のエージェントで使う準備（C1）、ローカルとクラウドの使い分け（C2） |
+| C 環境 | 1つのリポジトリを複数のエージェントで使う準備（C1）、ローカルとクラウドの使い分け（C2）、Hono と Void で Cloudflare に出す（C3） |
 | D Grok | Grok Build と Grok Bot（D02 が収録済み）。Claude Duet の観察メモ（D09） |
 | E・F | LLM アプリの作り方（E、これから）。プロンプトの書き方と context の設計（F1・F2） |
 
-[![学習の全体地図。0 はじめに → A Claude Code 単体（A1〜A13）→ B1 pstack → C 環境（C1・C2）→ D Grok（D02 Grok Bot は収録済み）→ 次の道具でも開発できる準備。E と F はどこからでも読める応用](../assets/diagrams/roadmap.svg)](../assets/diagrams/roadmap.svg)
+[![学習の全体地図。0 はじめに → A Claude Code 単体（A1〜A13）→ B1 pstack → C 環境（C1〜C3）→ D Grok（D02 Grok Bot は収録済み）→ 次の道具でも開発できる準備。E と F はどこからでも読める応用](../assets/diagrams/roadmap.svg)](../assets/diagrams/roadmap.svg)
 
 ## 「いつの時点の推奨か」を必ず見る
 
