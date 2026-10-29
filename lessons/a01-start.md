@@ -4,7 +4,7 @@ title: インストールと最初の依頼
 track: claude-code
 order: 1
 as_of: 2026-10-26
-revised: 2026-10-26（インストール手順を追加）
+revised: 2026-10-29（2.1.311 の CHANGELOG で ultrathink の effort を直した）
 applies_to: Claude Code 2.1.310 / Opus 5.5
 official_ref: Claude Code 101 · Module 1–2（What is Claude Code / Installing）
 estimated_minutes: 20
@@ -19,6 +19,8 @@ sources:
     checked: 2026-10-24
   - url: https://code.claude.com/docs/en/model-config
     checked: 2026-10-24
+  - url: https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md
+    checked: 2026-10-29
 announcements:
   - author: Claude blog
     date: 2026-09-25
@@ -40,7 +42,7 @@ history:
     date: 2025-03-15
     advice: プロンプトに think / think harder / ultrathink と書いて思考量を指定する
     status: superseded
-    note: 今は ultrathink（次のターンだけ high effort）以外の言葉は普通の文として扱われる。effort が主な調整手段
+    note: 今は ultrathink 以外の言葉は普通の文として扱われる。effort が主な調整手段
   - version: 1.0.0
     date: 2025-05-22
     advice: 一般提供開始（Opus 4 / Sonnet 4）
@@ -53,6 +55,9 @@ history:
     advice: 起動時の権限モードの既定が auto mode になった
     status: current
     note: 詳しくは A6
+  - version: 2.1.311
+    advice: 対話中のターミナルで ultrathink と書くと、そのターンが xhigh effort で動く（Anthropic の API 経由の Opus 5.5・Sonnet 5.5・Haiku 5.5・Fable 5.1）。作業中に書くと、そのターンの残りの effort が上がる
+    status: current
 ---
 
 ## この章でできるようになること
