@@ -4,7 +4,7 @@ title: Grok Bot の環境を整える
 track: grok
 order: 2
 as_of: 2026-10-29
-revised: 2026-10-29（4原則の対応表と最新の更新を足し、承認と安全の節を公式 changelog で確かめ直した）
+revised: 2026-10-29（4原則の対応表と最新の更新を足し、承認と安全の節を公式 changelog で確かめ直した。同日、コーディングを任せる形・ルーティンにする前の条件・マージの条件を pstack の公式ガイドに沿って足した）
 applies_to: Grok Bot（2026-10 時点）
 estimated_minutes: 25
 sources:
@@ -20,6 +20,12 @@ sources:
     checked: 2026-10-26
   - url: https://cursor.com/help/grok-bot/pages
     checked: 2026-10-25
+  - url: https://github.com/cursor/plugins/blob/main/pstack/docs/guide/07-overnight.md
+    checked: 2026-10-29
+  - url: https://github.com/cursor/plugins/blob/main/pstack/skills/poteto-mode/playbooks/orchestrate.md
+    checked: 2026-10-29
+  - url: https://zenn.dev/sc30gsw/books/080faba713547b
+    checked: 2026-10-29
 announcements:
   - author: "@poteto"
     date: 2026-10-23
@@ -73,12 +79,36 @@ Claude Code の章（A3〜A8）で使った仕組みを、Grok Bot ではどう�
 | 原則 | Claude Code | Grok Bot での実現 |
 |---|---|---|
 | 完了条件を渡す | `/goal`（A3） | 依頼文に、合否が出る完了条件を書く（下のセットアップ手順 7） |
-| 確かめる | Stop hook・テスト（A3・A6） | 「実行したコマンドと出力を見せて」のように、確かめた証拠を返させる。確かめ方は `/create-verification-skill`（B1）でスキルとして残す |
+| 確かめる | Stop hook・テスト（A3・A6） | 「実行したコマンドと出力を見せて」のように、確かめた証拠を返させる。確かめ方は検証スキルと Feature Map（B2）としてリポジトリに残し、依頼文でその名前を指定する |
 | 定時に回す | scheduled tasks（A8） | ルーティン。自分のタイムゾーンの時刻で動き、間隔は5分以上 [V] |
 | 並べる | worktree・並列セッション（A7） | pstack の `/swarm`（同じ仕事を手分け）と `/arena`（複数案を作って良い所を合わせる）。B1 を参照 |
 | 方針を残す | `CLAUDE.md`（A4） | スキル（手順）とメモリ（好み・役割） [V] |
 
 コードを変えるときは、Bot のコンピューターで GitHub CLI（`gh`）を使い、ブランチと PR で返してもらいます。main への push とデプロイは、自分が内容を見て承認してから頼みます。Cursor のクラウドエージェントに任せる方法もありますが、プランによっては使えません。
+
+## コーディングを任せる形
+
+| 形 | やり方 | 根拠 |
+|---|---|---|
+| Bot が自分で作業する | 共有のクラウドのコンピュータで clone し、`gh` でブランチと PR を返す | Bot のコンピュータにはターミナルがある [V]（overview） |
+| Bot をまとめ役にする | Bot が Cursor の Cloud Agents を起動し、自分はその監督と結果の確認だけをする。コードを読む・コマンドを実行する細かいやり取りで、Bot の context を埋めずに済む | Grok Bot の docs には記載なし（2026-10-29 時点）。poteto 氏の講演を要約した書籍（kaito 氏、5章）と、Cursor フォーラムの報告による [U] |
+
+まとめ役の形は、Cloud Agents がリポジトリごとに分かれた VM で動くので、Bot どうしで clone を取り合う問題（下の「承認と安全」）も起きにくくなります [U]。使えるかどうかは、自分のプランで Bot に「Cloud Agent を起動して」と頼んで確かめます。
+
+## ルーティンにする前に
+
+pstack の公式ガイド（07-overnight）は、人が見ていない間に作業を回す前に、次の4つがそろっているかを確かめるよう書いています [V]。
+
+1. その仕事を一度自分でやったか、エージェントがやるのを見て、良い結果がどういうものか分かっている
+2. エージェントに、自分が使うのと同じ道具（検証スキル・プロファイラ・ログ）がある
+3. どの段も、確かめた証拠を出し、基準に届かなければ止められる
+4. いくつかの記録を読み、くり返した失敗を道具・スキル・チェックに変えた
+
+そろうまでは、自分が見ている間だけ動かします。任せるときの依頼には、確かめられる終了条件・隔離した worktree かクラウドのエージェント・朝に読み返す決定ログの3つを入れます [V]。
+
+## マージの条件
+
+pstack の Orchestrate のプレイブックは、PR ごとに書いた本人ではない検証役を、別のモデル系統で付け、その検証役が最新のコミットで合格を出したときだけマージする、としています [V]。Grok Bot と Claude Code を両方使うなら、Grok が書いた PR は Claude に、Claude が書いた PR は Grok に確かめさせる、という組み合わせにできます。この教材では、合格のあとにマージするのは自分、という決まりは変えません。
 
 ## セットアップ手順
 

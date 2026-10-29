@@ -4,11 +4,16 @@ title: pstack を公式推奨と比べて使う
 track: pstack
 order: 1
 as_of: 2026-10-26
-applies_to: Claude Code 2.1.310 / pstack 0.15.32
+revised: 2026-10-29（pstack 0.15.36 の原則と README で確かめ直し、比較表の「人への確認」を「ほぼ同じ」に直した。「始める順」の行と B2 への案内を足した）
+applies_to: Claude Code 2.1.310 / pstack 0.15.36
 estimated_minutes: 30
 sources:
   - url: https://github.com/cursor/plugins/blob/main/pstack/README.md
-    checked: 2026-10-26
+    checked: 2026-10-29
+  - url: https://github.com/cursor/plugins/blob/main/pstack/skills/principle-never-block-on-the-human/SKILL.md
+    checked: 2026-10-29
+  - url: https://zenn.dev/sc30gsw/books/080faba713547b
+    checked: 2026-10-29
   - url: https://github.com/cursor/plugins/tree/main/pstack/skills
     checked: 2026-10-26
   - url: https://github.com/cursor/plugins/blob/main/pstack/skills/setup-pstack/SKILL.md
@@ -61,12 +66,15 @@ A1〜A9 で学んだ公式の推奨と比べると、次のようになります
 | context | guard-the-context-window（大量の読み込みは subagent に） | context は最も限られた資源（A2・A5） | 同じ |
 | 決まりを仕組みに | encode-lessons-in-structure（同じ指示を2回書いたら仕組みに） | 必ず守らせたいことは hook に（A4・A6） | 同じ |
 | 書く量 | 少なく、質の高いコードを書く | 公式の「過剰な設計を避ける」指示 | 同じ |
-| 計画 | 「計画は信じない。最良の仕様はコード」 | diff を1文で言えないなら計画する（A2） | 違う |
-| 人への確認 | never-block-on-the-human（先に進めて、後から直してもらう） | 取り消せない操作の前では止まる（A6） | 違う |
+| 計画 | 「計画は信じない。最良の仕様はコード」。ただし Cursor の plan mode とはよく合い、計画を作るなら `/poteto-mode` でも扱える（既定ではない）[V] | diff を1文で言えないなら計画する（A2） | 違う |
+| 人への確認 | never-block-on-the-human。取り消せる作業（コードを書く・メモを直す・タスクを分ける）は聞かずに進めて、結果を見せる。force-push・本番データの削除・外部への送信は確認する [V] | 取り消せない操作の前では止まる（A6） | ほぼ同じ |
+| 始める順 | 検証スキルと Feature Map が先。並列化と自動化は最後（B2） | 確かめる手段を先に渡す（A3） | 同じ |
 | 道具 | Cursor 向け。Claude Code では名前を読み替えて動く | Claude Code の機能だけで完結する | 違う |
 | モデル | 役割でモデルを分ける（実装は Grok、判断は Opus 5.5） | Anthropic のモデルだけが前提 | 違う |
 
-確かめ方・context の守り方・決まりを仕組みにすることは、公式とほぼ同じです。違うのは「計画しない」「人を待たない」の2つで、これは poteto 氏の流儀です。A2・A3・A6 の土台を固めてから、選んで取り入れるのがよいと考えます。
+確かめ方・context の守り方・決まりを仕組みにすること・人に確かめる境目は、公式とほぼ同じです。人への確認で違うのは、取り消せる作業を確かめずに進めてよいとする点だけです。はっきり違うのは「計画しない」で、これは poteto 氏の流儀です。A2・A3・A6 の土台を固めてから、選んで取り入れるのがよいと考えます。
+
+> 以前の版のこの表では「人への確認」を「違う」としていました。原則の SKILL.md を読み直すと、取り消せない操作は確認すると書かれていたので直しました（2026-10-29）。
 
 ## Claude Code に入れる
 
@@ -83,14 +91,14 @@ Cursor では `/add-plugin pstack` で入ります。Claude Code では、先に
 
 ## よく使うスキル
 
-0.15.32 の skills/ にあることを確かめた名前だけを載せています [V]。表の名前は Cursor での呼び方で、Claude Code では先頭に `pstack:` が付きます（例: `/pstack:how`）。
+0.15.32 の skills/ にあることを確かめた名前だけを載せています（2026-10-29 に 0.15.36 でも確かめ直した）[V]。表の名前は Cursor での呼び方で、Claude Code では先頭に `pstack:` が付きます（例: `/pstack:how`）。
 
 | したいこと | スキル |
 |---|---|
 | 厳密に作業を進める | `/poteto-mode` |
 | 使い方・どのスキルか迷う | `/poteto-help` |
 | モデルと予算の設定 | `/setup-pstack` |
-| 自分でアプリを動かして確かめさせる | `/create-verification-skill` |
+| 自分でアプリを動かして確かめさせる | `/create-verification-skill`・`/maintain-verification-skill`（B2） |
 | 自分の作業の流儀を mode にする | `/automate-me` |
 | コードの仕組みを知る | `/how`・`/why`・`/teach` |
 | 差分を複数のモデルで問い詰める | `/interrogate` |
@@ -103,7 +111,7 @@ Cursor では `/add-plugin pstack` で入ります。Claude Code では、先に
 ## ハンズオン
 
 <!-- exercise id="b01-version" check="file-contains" path="notes/b01-pstack.md" pattern="^pstack のバージョン: 0\.15\.\d+" -->
-pstack を入れ、シェルで `claude plugin list` を実行して、表示された pstack のバージョンを `notes/b01-pstack.md` の `pstack のバージョン:` の後ろに書く。0.15.32 より古ければ、上の手順で更新する。
+pstack を入れ、シェルで `claude plugin list` を実行して、表示された pstack のバージョンを `notes/b01-pstack.md` の `pstack のバージョン:` の後ろに書く。0.15.36 より古ければ、上の手順で更新する。
 <!-- /exercise -->
 
 <!-- exercise id="b01-autoupdate" check="manual" -->
@@ -130,5 +138,6 @@ sample-app の新しい依頼（例: 「tasklog に `--due` の書式チェッ�
 
 ## 振り返り
 
-- pstack の「確かめる」「context を守る」「仕組みにする」は、A3・A2・A6 と同じ考えです。違う2つ（計画しない・人を待たない）は、取り消せない操作の前で止まる守り（A6）があってこそ安全に使えます
-- 次のトラック C では、pstack も公式の流れも同じように動く環境（複数のエージェント・手元とクラウド）を整えます。そのあと D02 で、同じ考え方を Grok Bot で回します
+- pstack の「確かめる」「context を守る」「仕組みにする」は、A3・A2・A6 と同じ考えです。取り消せる作業を確かめずに進めるやり方は、取り消せない操作の前で止まる守り（A6）があってこそ安全に使えます
+- 次の B2 では、pstack が最初に作るよう勧める検証スキルと Feature Map を、sample-app に作ります
+- そのあとのトラック C では、pstack も公式の流れも同じように動く環境（複数のエージェント・手元とクラウド）を整えます。そのあと D02 で、同じ考え方を Grok Bot で回します
