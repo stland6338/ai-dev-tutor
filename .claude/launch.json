@@ -4,7 +4,7 @@
     {
       "name": "ai-dev-tutor",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "3250", "--bind", "127.0.0.1", "--directory", "/Users/tland/Claude/Projects/ai-dev-tutor"],
+      "runtimeArgs": ["-m", "http.server", "3250", "--bind", "127.0.0.1"],
       "port": 3250
     }
   ]

@@ -37,3 +37,8 @@ npm run self-test
 ```
 
 章の書き方は [docs/lesson-format.md](docs/lesson-format.md)、調査の一次資料は [docs/research-2026-10-24.md](docs/research-2026-10-24.md) にあります。
+
+## ライセンス
+
+- 本文と図（`lessons/`・`slides/`・`docs/`・`assets/`・README）: [CC BY 4.0](LICENSE-CONTENT)
+- コード（`app.js`・`lib/`・`scripts/`・`starter/`・`solutions/` など）: [MIT](LICENSE)
