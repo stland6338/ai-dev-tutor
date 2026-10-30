@@ -16,7 +16,7 @@
     "self-test": "node scripts/self-test.mjs",
     "serve": "python3 -m http.server 3250 --bind 127.0.0.1",
     "build": "node scripts/build.mjs",
-    "deploy": "npm run build && wrangler deploy"
+    "deploy": "node scripts/deploy-guard.mjs && npm run build && wrangler deploy"
   },
   "devDependencies": {
     "wrangler": "^4.106.0"
