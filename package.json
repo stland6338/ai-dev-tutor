@@ -2,6 +2,7 @@
   "name": "ai-dev-tutor",
   "version": "0.1.0",
   "private": true,
+  "license": "SEE LICENSE IN LICENSE",
   "description": "Anthropic / xAI が推奨する AI エージェント開発を、vimtutor 形式で手を動かして学ぶ教材",
   "type": "module",
   "engines": {
