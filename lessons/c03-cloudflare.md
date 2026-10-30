@@ -4,8 +4,9 @@ title: Cloudflare に出す（Hono と Void）
 track: env
 order: 3
 as_of: 2026-10-26
-applies_to: Claude Code 2.1.310 / Hono 4.13.14 / Void 1.2.1
-estimated_minutes: 30
+revised: 2026-10-29（Void 1.3.0 で静的なページと配信の検知を組んだ実例の節を足した）
+applies_to: Claude Code 2.1.310 / Hono 4.13.14 / Void 1.2.1・1.3.0
+estimated_minutes: 35
 sources:
   - url: https://hono.dev/docs/getting-started/cloudflare-workers
     checked: 2026-10-26
@@ -19,6 +20,16 @@ sources:
     checked: 2026-10-26
   - url: https://void.cloud/integrations/hono
     checked: 2026-10-26
+  - url: https://void.cloud/guide/jobs
+    checked: 2026-10-29
+  - url: https://void.cloud/guide/pages-routing/islands
+    checked: 2026-10-29
+  - url: https://void.cloud/guide/edge/prerendering
+    checked: 2026-10-29
+  - url: https://void.cloud/guide/env-vars
+    checked: 2026-10-29
+  - url: https://developers.google.com/youtube/v3/determine_quota_cost
+    checked: 2026-10-29
 history:
   - version: Hono 4.13.14
     date: 2026-10-26
@@ -29,6 +40,11 @@ history:
     advice: Vite のアプリを、DB・AI・認証まで含めて Workers に出す。void init が AGENTS.md と skills を入れる
     status: experimental
     note: 公開から日が浅い。VoidZero は数か月本番で使ってきたと書いている
+  - version: Void 1.3.0
+    date: 2026-10-29
+    advice: Next.js を使わず、Island ページの事前描画・crons・void/kv・routes を1つの Void アプリにまとめて Workers に出せた（この教材の作者の実例）
+    status: experimental
+    note: 1.x になって間もなく、版ごとに API が変わる。版を固定し、node_modules/void/docs/ を一次資料にする
 ---
 
 ## この章でできるようになること
@@ -73,6 +89,33 @@ Cloudflare と VoidZero（Vite の作者たち）が 2026-10-15 に公開しま�
 - `void init` は既存の AGENTS.md に足す前に確認を求め、Void の節の外は残します。CI では既存の指示を変えません [V]
 - デプロイは外に出す操作です。Claude に任せるときも承認を挟みます（A6）。API キーなどは `wrangler secret put` で入れ、`wrangler.jsonc` の `vars` には書きません
 - Hono の `cache()` は URL ごとに1つの応答をみんなに返します。利用者ごとに変わるルートには使いません [V]
+
+## 実例: 静的なページと配信の検知を Void だけで組む
+
+この教材の作者が 2026-10-29 に、にじさんじのスプラトゥーン3大会の非公式観戦ガイドを Void 1.3.0 で作った例です。はじめは Next.js の静的書き出しと別の Worker（アルプススタンド2026 と同じ形）で考えていましたが、Void の docs と使った人の記事を読んで、Next.js をやめて Void だけで組みました。
+
+| できること | Void の部品 |
+|---|---|
+| 読むだけのページ（ルール・概要） | island を持たない Island ページ。デプロイのたびに事前描画され、JS を送らない [V] |
+| 一部だけ動くページ（いま配信中・まとめて見る） | Island ページの island だけが hydrate する [V] |
+| 配信の検知（1分ごと） | `crons/live.ts` が `void/kv` に書く [V] |
+| 配信の情報を返す API | `routes/api/live.ts`。応答に `x-revalidate` を付けて短くキャッシュする [V] |
+| 出す | `void deploy` 1回 [V] |
+
+### 使って分かったこと
+
+- **一次資料は同梱の docs**: `npm install` すると `node_modules/void/docs/` に、その版の docs と skill が入る。ネットの記事は版が古いことがあるので、エージェントにはこちらを読ませた [R]
+- **確かめるのは `void dev`**: 事前描画はデプロイのときに行われ、`vite build` だけでは HTML が出ない。画面の確かめはローカルの `void dev` で行った [R]
+- **cron は手で起こす**: ローカルでは cron が自動で動かない。起動時に出るトークン付きで `POST /__void/scheduled` を送ると1回動く [V]
+- **island は相対パスで import する**: `@/` の別名で import した部品は island として登録されず、hydrate されなかった（1.3.0）[R]
+- **`.env` と開発時だけの経路**: `.env` があると、起動時のシェルの環境変数が worker に届かなかった。開発時だけ使う切り替えは `routes/api/dev/fixture.dev.ts` に置いた。`.dev.ts` の経路は本番のビルドに入らない [V]。念のため、ビルドのあとに「開発時だけの経路の印が dist に無い」ことを確かめる検査を足した [R]
+- **秘密の値の写し**: Cloudflare の Vite プラグインが `.env` の中身を `dist/ssr/.dev.vars` に写していた。ビルドの最後で消し、`void deploy` もこのファイルを送らないことを確かめた [R]。A10 の「秘密の値を外に出さない」は、ビルドの成果物まで見る
+
+### 外の API の利用枠と、無料プランの上限
+
+- **YouTube Data API**: 1日 10,000 ユニット。`videos.list`・`playlistItems.list` は1回1ユニットで、`videos.list` は50件まで ID を渡せる [V]。チャンネルごとに新着を問い合わせる作りだと、97チャンネルを1分ごとに見ると1日約49,000ユニットで足りない。「新しい動画を見つける」（RSS・WebSub・Holodex の API。YouTube の枠を使わない）と「状態を確かめる」（`videos.list` をまとめて）を分けると、最悪でも1日 5,760 ユニットに収まった [R]
+- **Workers の無料プラン**: 1日10万回まで [U]（数字は公開の前に Cloudflare の docs で確かめる）。閲覧者のページが30秒ごとに API を取りに行く作りだと、本戦の日のように人が集まる日は足りなくなる。取りに行く間隔を延ばす、タブが裏にある間は止める、結果を Worker を通さずに配る、を検討した
+- どちらも、見積もりをデータの検査（`check:data`）に入れ、上限を超える設定にしたら失敗するようにした（B2・A6 の「仕組みで止める」）
 
 ## ハンズオン
 
